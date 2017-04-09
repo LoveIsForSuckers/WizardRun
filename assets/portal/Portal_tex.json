@@ -1,0 +1,1 @@
+{"SubTexture":[{"y":0,"frameX":0,"frameHeight":512,"frameY":0,"width":255,"frameWidth":256,"height":512,"name":"portal","x":0},{"y":256,"frameX":0,"frameHeight":256,"frameY":0,"width":256,"frameWidth":256,"height":247,"name":"smoke","x":255},{"width":256,"y":0,"height":256,"name":"details","x":255}],"imagePath":"Portal_tex.png","name":"Portal"}

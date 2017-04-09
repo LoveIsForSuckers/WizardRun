@@ -1,0 +1,7 @@
+/!secure
+/bin
+/obj
+/lib-swc
+/src/!psd
+/src/com/greensock
+/src/dragonBones
