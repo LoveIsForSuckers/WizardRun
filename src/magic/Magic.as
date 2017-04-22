@@ -2,6 +2,7 @@ package magic
 {
 	import flash.ui.Keyboard;
 	import magic.Ability;
+	import screens.GameScreen;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -17,9 +18,13 @@ package magic
 		private var _barMask:Image;
 		
 		private var _abilities:Vector.<magic.Ability> = new Vector.<magic.Ability>;
+		private var _gameScreen:GameScreen;
 		
-		public function Magic() 
+		public function Magic(gameScreen:GameScreen) 
 		{
+			if (!_gameScreen || _gameScreen != gameScreen)
+				_gameScreen = gameScreen;
+			
 			_mana = 0;
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);
@@ -52,7 +57,7 @@ package magic
 		
 		private function slowCast():void 
 		{
-			Game.instance.updateSpeed( -Game.instance.gameSpeed * 0.4);
+			_gameScreen.updateSpeed( -_gameScreen.gameSpeed * 0.4);
 		}
 		
 		public function ghostCast(duration:int = 5):void
@@ -60,19 +65,19 @@ package magic
 			if (duration < 2)
 				duration = 2;
 			
-			Game.instance.wiz.isGhost = true;
+			_gameScreen.wiz.isGhost = true;
 			Starling.juggler.delayCall(almostOverGhost, duration - 1);
 			Starling.juggler.delayCall(stopGhost, duration);
 		}
 		
 		private function almostOverGhost():void
 		{
-			Game.instance.wiz.alpha = 0.8;
+			_gameScreen.wiz.alpha = 0.8;
 		}
 		
 		private function stopGhost():void 
 		{
-			Game.instance.wiz.isGhost = false;
+			_gameScreen.wiz.isGhost = false;
 		}
 		
 		public function cast(keyCode:uint):Boolean
@@ -113,7 +118,7 @@ package magic
 			if (_mana != MAX_MANA)
 				_mana += amount;
 			else
-				Game.instance.updateScore(amount);
+				_gameScreen.updateScore(amount);
 			
 			if (_mana > MAX_MANA)
 				_mana = MAX_MANA;
@@ -134,7 +139,7 @@ package magic
 			if (_mana > MAX_MANA)
 			{
 				_mana = MAX_MANA;
-				Game.instance.trySpawnPortal();
+				_gameScreen.trySpawnPortal();
 			}
 			
 			for each (var ability:Ability in _abilities)

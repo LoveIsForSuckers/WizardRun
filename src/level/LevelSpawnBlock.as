@@ -5,6 +5,8 @@ package level
 	import dynamics.Crate;
 	import dynamics.Life;
 	import dynamics.Potion;
+	import screens.GameScreen;
+	
 	public class LevelSpawnBlock 
 	{
 		static private const OBSTACLE_BIRD:String = "bird";
@@ -24,9 +26,8 @@ package level
 			_boostsData = blockData.boosts;
 		}
 		
-		public function spawn():void
+		public function spawn(gameSpeed:int):void
 		{
-			var _gameSpeed:int = Game.instance.gameSpeed;
 			var data:Object;
 			
 			for each (data in _obstaclesData)
@@ -34,13 +35,13 @@ package level
 				switch (data.type)
 				{
 					case OBSTACLE_BIRD:
-						Game.instance.addObstacle(new Bird(_gameSpeed, data.x + Game.BLOCK_WIDTH, data.y));
+						GameScreen.instance.addObstacle(new Bird(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y));
 						break;
 					case OBSTACLE_BOULDER:
-						Game.instance.addObstacle(new Boulder(_gameSpeed, data.x + Game.BLOCK_WIDTH, data.y));
+						GameScreen.instance.addObstacle(new Boulder(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y));
 						break;
 					case OBSTACLE_CRATE:
-						Game.instance.addObstacle(new Crate(_gameSpeed, data.x + Game.BLOCK_WIDTH, data.y));
+						GameScreen.instance.addObstacle(new Crate(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y));
 						break;
 					default:
 						trace("[SpawnLogic] incorrect obstacle type in block", _type);
@@ -53,10 +54,10 @@ package level
 				switch (data.type)
 				{
 					case BOOST_LIFE:
-						Game.instance.addBoost(new Life(_gameSpeed, data.x + Game.BLOCK_WIDTH, data.y));
+						GameScreen.instance.addBoost(new Life(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y));
 						break;
 					case BOOST_POTION:
-						Game.instance.addBoost(new Potion(_gameSpeed, data.x + Game.BLOCK_WIDTH, data.y));
+						GameScreen.instance.addBoost(new Potion(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y));
 						break;
 					default:
 						trace("[SpawnLogic] incorrect boost type in block", _type);

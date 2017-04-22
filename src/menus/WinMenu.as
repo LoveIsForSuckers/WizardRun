@@ -8,8 +8,6 @@ package menus
 	import starling.events.Event;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import starling.filters.BlurFilter;
-	import starling.filters.DropShadowFilter;
 	import starling.text.TextField;
 	import starling.text.TextFormat;
 	

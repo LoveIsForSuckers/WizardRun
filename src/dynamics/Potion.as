@@ -4,7 +4,7 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
-	import starling.display.Sprite;
+	import screens.GameScreen;
 	import starling.events.Event;
 
 	public class Potion extends BaseBoost
@@ -57,7 +57,7 @@ package dynamics
 		override public function onPickUp():void 
 		{
 			Game.instance.playSound("potion");
-			Game.instance.magic.boost(1000);
+			GameScreen.instance.magic.boost(1000);
 		}
 	}
 }

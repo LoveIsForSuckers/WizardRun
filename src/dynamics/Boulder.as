@@ -1,7 +1,7 @@
 package dynamics 
 {
+	import screens.GameScreen;
 	import starling.display.Image;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	
 
@@ -33,7 +33,7 @@ package dynamics
 		{
 			x -= _speed * deltaTime;
 			
-			if (y < Game.FLOOR_Y)
+			if (y < GameScreen.FLOOR_Y)
 				moveY(deltaTime);
 		}
 		
@@ -44,14 +44,14 @@ package dynamics
 		
 		private function moveY(deltaTime:Number):void
 		{
-			if (y + _speedY * deltaTime <= Game.FLOOR_Y)
+			if (y + _speedY * deltaTime <= GameScreen.FLOOR_Y)
 			{
 				y += _speedY * deltaTime;
-				_speedY -= Game.GRAVITY * deltaTime * 0.3;
+				_speedY -= GameScreen.GRAVITY * deltaTime * 0.3;
 			}
 			else
 			{
-				y = Game.FLOOR_Y;
+				y = GameScreen.FLOOR_Y;
 				_speedY = 0;
 			}
 		}

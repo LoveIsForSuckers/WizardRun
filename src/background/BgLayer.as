@@ -1,5 +1,6 @@
 package background 
 {
+	import screens.GameScreen;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -27,7 +28,7 @@ package background
 			_image1 = new Image(_texture);
 			addChild(_image1);
 			_image1.x = 0;
-			_image1.y = stage.stageHeight - Game.UI_PADDING - height;
+			_image1.y = stage.stageHeight - GameScreen.UI_PADDING - height;
 			
 			_image2 = new Image(_texture);
 			addChild(_image2);

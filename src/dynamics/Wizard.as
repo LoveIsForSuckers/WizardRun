@@ -4,8 +4,8 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
-	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import screens.GameScreen;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -66,7 +66,7 @@ package dynamics
 					_display = _armature.display as StarlingArmatureDisplay;
 					
 					x = stage.stageWidth * 0.5;
-					y = Game.FLOOR_Y;
+					y = GameScreen.FLOOR_Y;
 					
 					addChild(_display);
 					
@@ -148,14 +148,14 @@ package dynamics
 				
 				x += direction * _speedX * deltaTime;
 				
-				if (x > Game.MAX_X)
-					x = Game.MAX_X;
-				else if (x < Game.MIN_X)
-					x = Game.MIN_X;
+				if (x > GameScreen.MAX_X)
+					x = GameScreen.MAX_X;
+				else if (x < GameScreen.MIN_X)
+					x = GameScreen.MIN_X;
 				
 				//turnAround(direction);
 			}
-			else if (y == Game.FLOOR_Y && !_isCasting && !_isDying)
+			else if (y == GameScreen.FLOOR_Y && !_isCasting && !_isDying)
 			{
 				animate(ANIMATION_WALK);
 			}
@@ -163,14 +163,14 @@ package dynamics
 		
 		private function moveY(deltaTime:Number):void
 		{
-			if (y + _speedY * deltaTime <= Game.FLOOR_Y)
+			if (y + _speedY * deltaTime <= GameScreen.FLOOR_Y)
 			{
 				y += _speedY * deltaTime;
-				_speedY -= (Game.GRAVITY + (_isGhost ? GHOST_GRAVITY_REDUCE : 0)) * deltaTime;
+				_speedY -= (GameScreen.GRAVITY + (_isGhost ? GHOST_GRAVITY_REDUCE : 0)) * deltaTime;
 			}
 			else
 			{
-				y = Game.FLOOR_Y;
+				y = GameScreen.FLOOR_Y;
 				_speedY = 0;
 				_isInJump = false;
 			}
@@ -191,7 +191,7 @@ package dynamics
 		{
 			if (_castDelay <= 0)
 			{
-				if(Game.instance.magic.cast(keyCode))
+				if(GameScreen.instance.magic.cast(keyCode))
 				{
 					_isCasting = true;
 					_castDelay = CAST_DELAY;
@@ -269,7 +269,7 @@ package dynamics
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			
 			x = stage.stageWidth * 0.5;
-			y = Game.FLOOR_Y;
+			y = GameScreen.FLOOR_Y;
 		}
 		
 		private function turnAround(direction:int):void

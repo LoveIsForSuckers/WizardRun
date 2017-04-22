@@ -4,7 +4,7 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
-	import starling.display.Sprite;
+	import screens.GameScreen;
 	import starling.events.Event;
 	
 
@@ -59,7 +59,7 @@ package dynamics
 		override public function onPickUp():void 
 		{
 			Game.instance.playSound("powerup");
-			Game.instance.lives.increase();
+			GameScreen.instance.lives.increase();
 		}
 	}
 }

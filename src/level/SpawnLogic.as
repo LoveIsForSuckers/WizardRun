@@ -31,7 +31,7 @@ package level
 			}
 		}
 		
-		public function spawnBlock():void
+		public function spawnBlock(gameSpeed:int):void
 		{
 			var blockToSpawn:int;
 			
@@ -42,7 +42,7 @@ package level
 			
 			trace("[SpawnLogic] block:", _level[blockToSpawn].type, blockToSpawn, "/", (_level.length - 1));
 			
-			_level[blockToSpawn].spawn();
+			_level[blockToSpawn].spawn(gameSpeed);
 			_currentBlock ++;
 		}
 		

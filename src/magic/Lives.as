@@ -63,8 +63,6 @@ package magic
 		{
 			if (_lives < MAX_LIVES)
 				_lives += 1;
-			else 
-				Game.instance.updateScore(10000);
 				
 			updateView();
 		}
