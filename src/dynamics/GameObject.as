@@ -1,6 +1,7 @@
 package dynamics 
 {
 	import flash.geom.Rectangle;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
@@ -37,6 +38,11 @@ package dynamics
 		public function set speed(value:int):void
 		{
 			_speed = value;
+		}
+		
+		public function get preview():Image
+		{
+			return null;
 		}
 	}
 	

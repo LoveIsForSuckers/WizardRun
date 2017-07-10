@@ -5,7 +5,8 @@ package
 	import menus.MainMenu;
 	import menus.RestartMenu;
 	import menus.WinMenu;
-	import screens.GameScreen;
+	import screens.editor.EditorScreen;
+	import screens.game.GameScreen;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
@@ -96,10 +97,30 @@ package
 			Assets.instance.manager.playSound(name, 0, 0, _soundTransform);
 		}
 		
+		public function openEditor():void 
+		{
+			tryClearMenus();
+			
+			if (!EditorScreen.instance)
+				new EditorScreen();
+			
+			EditorScreen.instance.activate(_screenLayer);
+		}
+		
 		public function startGame():void 
 		{
 			_music = Assets.instance.manager.playSound('dubakupado', 0, 50, _soundTransform);
 			
+			tryClearMenus();
+			
+			if (!GameScreen.instance)
+				new GameScreen();
+			
+			GameScreen.instance.activate(_screenLayer);
+		}
+		
+		private function tryClearMenus():void 
+		{
 			if (_mainMenu)
 			{
 				_menuLayer.removeChild(_mainMenu);
@@ -117,13 +138,6 @@ package
 				_menuLayer.removeChild(_winMenu);
 				_winMenu = null;
 			}
-			
-			if (!GameScreen.instance)
-			{
-				new GameScreen();
-			}
-			
-			GameScreen.instance.activate(_screenLayer);
 		}
 		
 		public function onGameOver():void 

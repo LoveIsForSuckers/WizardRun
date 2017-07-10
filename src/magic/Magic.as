@@ -2,7 +2,7 @@ package magic
 {
 	import flash.ui.Keyboard;
 	import magic.Ability;
-	import screens.GameScreen;
+	import screens.game.GameScreen;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;

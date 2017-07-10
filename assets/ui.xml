@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TextureAtlas imagePath='C:\Users\Dmitriy\Desktop\Project\Cloudrest\assets\ui.xml'>
+<SubTexture name='uiProto' x='0' y='0' width='2002' height='218' />
+<SubTexture name='manaBar' x='0' y='220' width='1200' height='100' />
+<SubTexture name='manaBarFilled' x='0' y='322' width='1200' height='100' />
+<SubTexture name='manaBarMask' x='0' y='424' width='1200' height='100' />
+<SubTexture name='logo' x='0' y='526' width='1024' height='1024' />
+<SubTexture name='buttonDown' x='1202' y='220' width='340' height='142' />
+<SubTexture name='buttonHover' x='0' y='1552' width='340' height='142' />
+<SubTexture name='buttonIdle' x='1026' y='526' width='340' height='142' />
+<SubTexture name='fromFullscreen' x='1202' y='364' width='96' height='96' />
+<SubTexture name='mute' x='1300' y='364' width='96' height='96' />
+<SubTexture name='sound' x='1026' y='670' width='96' height='96' />
+<SubTexture name='toFullscreen' x='0' y='1696' width='96' height='96' />
+</TextureAtlas>

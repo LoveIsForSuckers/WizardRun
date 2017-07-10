@@ -84,35 +84,25 @@ package
 		// -----------------------------------------------------------------------------------------------------------
 		// TEXTURES
 		// ----------------------------------------------------------------------------------------------------------- 
-		[Embed(source = "../assets/ui/logo.png")]
-		public static const logo:Class;
-		[Embed(source = "../assets/ui/buttonOver.png")]
-		public static const buttonHover:Class;
-		[Embed(source = "../assets/ui/button.png")]
-		public static const buttonIdle:Class;
-		[Embed(source = "../assets/ui/buttonDown.png")]
-		public static const buttonDown:Class;
-		[Embed(source = "../assets/ui/mute.png")]
-		public static const mute:Class;
-		[Embed(source = "../assets/ui/sound.png")]
-		public static const sound:Class;
-		[Embed(source = "../assets/ui/toFullscreen.png")]
-		public static const toFullscreen:Class;
-		[Embed(source = "../assets/ui/fromFullscreen.png")]
-		public static const fromFullscreen:Class;
-		[Embed(source = "../assets/ui/uiProto.png")]
-		public static const uiProto:Class;
-		[Embed(source = "../assets/ui/manabar.png")]
-		public static const manaBar:Class;
-		[Embed(source = "../assets/ui/manabarFilled.png")]
-		public static const manaBarFilled:Class;
-		[Embed(source = "../assets/ui/manabarMask.png")]
-		public static const manaBarMask:Class;
+		[Embed(source = "../assets/ui.png")]
+		public static const ui:Class;
+		[Embed(source = "../assets/ui.xml", mimeType = "application/octet-stream")]
+		public static const uiData:Class;
+		
+		[Embed(source = "../assets/tabBg.png")]
+		public static const tabBg:Class;
 		
 		[Embed(source = "../assets/crate.png")]
 		public static const crate:Class;
 		[Embed(source = "../assets/boulder.png")]
 		public static const boulder:Class;
+		
+		[Embed(source = "../assets/editor/crate.png")]
+		public static const cratePreview:Class;
+		[Embed(source = "../assets/editor/boulder.png")]
+		public static const boulderPreview:Class;
+		[Embed(source = "../assets/editor/bird.png")]
+		public static const birdPreview:Class;
 		
 		[Embed(source = "../assets/ability/slow.png")]
 		public static const slow:Class;

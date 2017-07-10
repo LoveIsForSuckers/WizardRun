@@ -1,11 +1,11 @@
 package level 
 {
-	import dynamics.Bird;
-	import dynamics.Boulder;
-	import dynamics.Crate;
-	import dynamics.Life;
-	import dynamics.Potion;
-	import screens.GameScreen;
+	import dynamics.obstacle.Bird;
+	import dynamics.obstacle.Boulder;
+	import dynamics.obstacle.Crate;
+	import dynamics.boost.Life;
+	import dynamics.boost.Potion;
+	import screens.game.GameScreen;
 	
 	public class LevelSpawnBlock 
 	{

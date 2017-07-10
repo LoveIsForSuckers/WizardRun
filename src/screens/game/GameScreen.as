@@ -1,15 +1,16 @@
-package screens 
+package screens.game 
 {
 	import background.Background;
 	import com.greensock.TweenLite;
-	import dynamics.BaseBoost;
-	import dynamics.BaseObstacle;
-	import dynamics.IObstacle;
+	import dynamics.boost.BaseBoost;
+	import dynamics.obstacle.BaseObstacle;
+	import dynamics.obstacle.IObstacle;
 	import dynamics.Portal;
 	import dynamics.Wizard;
 	import level.SpawnLogic;
 	import magic.Lives;
 	import magic.Magic;
+	import screens.IScreen;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;

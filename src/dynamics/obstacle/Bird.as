@@ -1,10 +1,12 @@
-package dynamics 
+package dynamics.obstacle 
 {
 	import dragonBones.Armature;
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import dynamics.obstacle.BaseObstacle;
 	import starling.display.DisplayObject;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 
@@ -68,6 +70,12 @@ package dynamics
 		override public function set speed(value:int):void 
 		{
 			super.speed = 1.5 * value;
+		}
+		
+		override public function get preview():Image 
+		{
+			var result:Image = new Image(Assets.instance.manager.getTexture("birdPreview"));
+			return result;
 		}
 	}
 }

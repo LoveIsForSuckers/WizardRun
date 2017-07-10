@@ -1,6 +1,7 @@
-package dynamics 
+package dynamics.obstacle 
 {
-	import screens.GameScreen;
+	import dynamics.obstacle.BaseObstacle;
+	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.events.Event;
 	
@@ -64,6 +65,12 @@ package dynamics
 		public function set speedY(value:int):void 
 		{
 			_speedY = value;
+		}
+		
+		override public function get preview():Image 
+		{
+			var result:Image = new Image(Assets.instance.manager.getTexture("boulderPreview"));
+			return result;
 		}
 	}
 }

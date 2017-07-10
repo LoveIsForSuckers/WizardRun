@@ -1,5 +1,6 @@
-package dynamics 
+package dynamics.obstacle 
 {
+	import dynamics.GameObject;
 	import starling.events.Event;
 
 	public class BaseObstacle extends GameObject implements IObstacle 

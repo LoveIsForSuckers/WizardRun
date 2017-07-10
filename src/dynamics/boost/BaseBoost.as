@@ -1,5 +1,7 @@
-package dynamics 
+package dynamics.boost 
 {
+	import dynamics.GameObject;
+	import dynamics.boost.IBoost;
 
 	public class BaseBoost extends GameObject implements IBoost 
 	{

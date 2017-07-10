@@ -19,7 +19,6 @@ package
 			
 			_manager.enqueue(EmbedAssets);
 			_manager.enqueue("../assets/levelData/testlevel.json");
-			
 			_manager.loadQueue(onProgress);
 			
 			TextField.updateEmbeddedFonts();

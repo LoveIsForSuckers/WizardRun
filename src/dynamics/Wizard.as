@@ -5,7 +5,7 @@ package dynamics
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
 	import flash.ui.Keyboard;
-	import screens.GameScreen;
+	import screens.game.GameScreen;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;

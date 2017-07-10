@@ -1,10 +1,11 @@
-package dynamics 
+package dynamics.boost 
 {
 	import dragonBones.Armature;
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
-	import screens.GameScreen;
+	import dynamics.boost.BaseBoost;
+	import screens.game.GameScreen;
 	import starling.events.Event;
 
 	public class Potion extends BaseBoost

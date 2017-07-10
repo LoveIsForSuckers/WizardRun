@@ -1,6 +1,6 @@
 package background 
 {
-	import screens.GameScreen;
+	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
