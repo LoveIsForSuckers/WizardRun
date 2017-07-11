@@ -91,6 +91,8 @@ package
 		
 		[Embed(source = "../assets/tabBg.png")]
 		public static const tabBg:Class;
+		[Embed(source = "../assets/border.png")]
+		public static const border:Class;
 		
 		[Embed(source = "../assets/crate.png")]
 		public static const crate:Class;
@@ -103,6 +105,10 @@ package
 		public static const boulderPreview:Class;
 		[Embed(source = "../assets/editor/bird.png")]
 		public static const birdPreview:Class;
+		[Embed(source = "../assets/editor/life.png")]
+		public static const lifePreview:Class;
+		[Embed(source = "../assets/editor/potion.png")]
+		public static const potionPreview:Class;
 		
 		[Embed(source = "../assets/ability/slow.png")]
 		public static const slow:Class;

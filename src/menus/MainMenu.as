@@ -16,19 +16,23 @@ package menus
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.text.TextFormat;
+	import ui.components.GameButton;
 	
 
 	public class MainMenu extends Sprite
 	{
 		private var _bg:Quad;
 		private var _logo:Image;
-		private var _startBtn:Button;
-		private var _editorBtn:Button;
-		private var _muteBtn:Button;
-		private var _fullScreenBtn:Button;
+		
 		private var _muteIcon:Image;
 		private var _fullScreenIcon:Image;
+		
 		private var _infoText:TextField;
+		
+		private var _muteBtn:GameButton;
+		private var _fullScreenBtn:GameButton;
+		private var _editorBtn:GameButton;
+		private var _startBtn:GameButton;
 		
 		public function MainMenu() 
 		{
@@ -53,46 +57,29 @@ package menus
 			TweenLite.to(_logo, 1, { y: (stage.stageHeight - _logo.height) * 0.1, alpha: 1, onComplete: tweenChildren } );
 			addChild(_logo);
 			
-			_startBtn = new Button(Assets.instance.manager.getTexture("buttonIdle"), "Начать", Assets.instance.manager.getTexture("buttonDown"),
-					Assets.instance.manager.getTexture("buttonHover"));
-			_startBtn.textFormat = new TextFormat("f_default", 48, 0x844C13);
-			_startBtn.textFormat.bold = true;
+			_startBtn = new GameButton(onStartBtnClick, "Начать");
 			_startBtn.x = -_startBtn.width;
 			_startBtn.y = (stage.stageHeight - _logo.height) * 0.1 + _logo.height;
 			addChild(_startBtn);
 			
-			_editorBtn = new Button(Assets.instance.manager.getTexture("buttonIdle"), "Редактор", Assets.instance.manager.getTexture("buttonDown"),
-					Assets.instance.manager.getTexture("buttonHover"));
-			_editorBtn.textFormat = new TextFormat("f_default", 48, 0x844C13);
-			_editorBtn.textFormat.bold = true;
+			_editorBtn = new GameButton(onEditorBtnClick, "Редактор");
 			_editorBtn.x = -_editorBtn.width;
 			_editorBtn.y =  _startBtn.y + _startBtn.height + 0.2 * _editorBtn.height;
 			addChild(_editorBtn);
 			
-			_muteBtn = new Button(Assets.instance.manager.getTexture("buttonIdle"), "", Assets.instance.manager.getTexture("buttonDown"),
-					Assets.instance.manager.getTexture("buttonHover"));
-			_muteBtn.scale9Grid = new Rectangle(100, 0, 140, 142);
-			_muteBtn.width = 200;
 			_muteIcon = new Image(Assets.instance.manager.getTexture("sound"));
 			if (Game.instance.soundTransform.volume == 0)
 				_muteIcon.texture = Assets.instance.manager.getTexture("mute");
-			_muteBtn.addChild(_muteIcon);
-			_muteIcon.x = (_muteBtn.width - _muteIcon.width) * 0.5;
-			_muteIcon.y = (_muteBtn.height - _muteIcon.height) * 0.5;
+			_muteBtn = new GameButton(onMuteBtnClick, "", _muteIcon);
 			_muteBtn.x = stage.stageWidth + _muteBtn.width;
 			_muteBtn.y = _editorBtn.y + _editorBtn.height + 0.2 * _muteBtn.height;
 			addChild(_muteBtn);
 			
-			_fullScreenBtn = new Button(Assets.instance.manager.getTexture("buttonIdle"), "", Assets.instance.manager.getTexture("buttonDown"),
-					Assets.instance.manager.getTexture("buttonHover"));
-			_fullScreenBtn.scale9Grid = new Rectangle(100, 0, 140, 142);
-			_fullScreenBtn.width = 200;
 			_fullScreenIcon = new Image(Assets.instance.manager.getTexture("toFullscreen"));
 			if (Starling.current.nativeStage.displayState != StageDisplayState.NORMAL)
 				_fullScreenIcon.texture = Assets.instance.manager.getTexture("fromFullscreen");
-			_fullScreenBtn.addChild(_fullScreenIcon);
-			_fullScreenIcon.x = (_fullScreenBtn.width - _fullScreenIcon.width) * 0.5;
-			_fullScreenIcon.y = (_fullScreenBtn.height - _fullScreenIcon.height) * 0.5;
+			_fullScreenBtn = new GameButton(onFullScreenBtnClick, "", _fullScreenIcon);
+			_fullScreenBtn.processEarlyClick = true;
 			_fullScreenBtn.x = _muteBtn.x + _muteBtn.width + 30;
 			_fullScreenBtn.y = _editorBtn.y + _editorBtn.height + 0.2 * _fullScreenBtn.height;
 			addChild(_fullScreenBtn);
@@ -106,7 +93,6 @@ package menus
 			_infoText.y = stage.stageHeight + _infoText.height;
 			addChild(_infoText);
 			
-			addEventListener(TouchEvent.TOUCH, onBtnTouch);
 			Starling.current.nativeStage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullscreen);
 		}
 		
@@ -124,39 +110,38 @@ package menus
 			touchable = true;
 		}
 		
-		private function onBtnTouch(e:TouchEvent):void 
+		private function onFullScreenBtnClick():void 
 		{
-			if (e.getTouch(_startBtn, TouchPhase.ENDED))
-			{
-				removeEventListener(TouchEvent.TOUCH, onBtnTouch);
-				Starling.current.nativeStage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullscreen);
-				
-				Game.instance.startGame();
-			}
-			else if (e.getTouch(_muteBtn, TouchPhase.ENDED))
-			{
-				if (Game.instance.soundTransform.volume != 0)
-					_muteIcon.texture = Assets.instance.manager.getTexture("mute");
-				else
-					_muteIcon.texture = Assets.instance.manager.getTexture("sound");
-				
-				Game.instance.toggleMute();
-			}
-			else if (e.getTouch(_fullScreenBtn, TouchPhase.BEGAN))
-			{
-				Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_UP, fullScreen);
-			}
-			else if (e.getTouch(_editorBtn, TouchPhase.ENDED))
-			{
-				removeEventListener(TouchEvent.TOUCH, onBtnTouch);
-				
-				Game.instance.openEditor();
-			}
+			Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_UP, toggleFullScreen);
+			trace("add");
 		}
 		
-		private function fullScreen(e:MouseEvent):void
+		private function onMuteBtnClick():void 
 		{
-			Starling.current.nativeStage.removeEventListener(MouseEvent.MOUSE_UP, fullScreen);
+			if (Game.instance.soundTransform.volume != 0)
+				_muteIcon.texture = Assets.instance.manager.getTexture("mute");
+			else
+				_muteIcon.texture = Assets.instance.manager.getTexture("sound");
+			
+			Game.instance.toggleMute();
+		}
+		
+		private function onEditorBtnClick():void 
+		{
+			clear();
+			Game.instance.openEditor();
+		}
+		
+		private function onStartBtnClick():void 
+		{
+			clear();
+			Game.instance.startGame();
+		}
+		
+		private function toggleFullScreen(e:MouseEvent):void
+		{
+			Starling.current.nativeStage.removeEventListener(MouseEvent.MOUSE_UP, toggleFullScreen);
+			trace("rm");
 			
 			if (Starling.current.nativeStage.displayState == StageDisplayState.NORMAL)
 			{
@@ -174,6 +159,16 @@ package menus
 				_fullScreenIcon.texture = Assets.instance.manager.getTexture("toFullscreen");
 			else
 				_fullScreenIcon.texture = Assets.instance.manager.getTexture("fromFullscreen");
+		}
+		
+		private function clear():void
+		{
+			Starling.current.nativeStage.removeEventListener(MouseEvent.MOUSE_UP, toggleFullScreen);
+			Starling.current.nativeStage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullscreen);
+			_startBtn.clear();
+			_editorBtn.clear();
+			_muteBtn.clear();
+			_fullScreenBtn.clear();
 		}
 	}
 }

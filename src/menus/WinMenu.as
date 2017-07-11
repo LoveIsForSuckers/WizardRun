@@ -10,13 +10,14 @@ package menus
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.text.TextFormat;
+	import ui.components.GameButton;
 	
 
 	public class WinMenu extends Sprite 
 	{
 		private var _bg:Quad;
 		private var _successText:TextField;
-		private var _homeBtn:Button;
+		private var _homeBtn:GameButton;
 		
 		public function WinMenu() 
 		{
@@ -41,15 +42,16 @@ package menus
 			TweenLite.to(_successText, 0.4, { y: 0, onComplete: tweenChildren } );
 			addChild(_successText);
 			
-			_homeBtn = new Button(Assets.instance.manager.getTexture("buttonIdle"), "В меню", Assets.instance.manager.getTexture("buttonDown"),
-					Assets.instance.manager.getTexture("buttonHover"));
-			_homeBtn.textFormat = new TextFormat("f_default", 48, 0x844C13);
-			_homeBtn.textFormat.bold = true;
+			_homeBtn = new GameButton(onBtnClick, "В меню");
 			_homeBtn.x = -_homeBtn.width;
 			_homeBtn.y = 1.2 * _successText.height;
 			addChild(_homeBtn);
-			
-			addEventListener(TouchEvent.TOUCH, onBtnTouch);
+		}
+		
+		private function onBtnClick():void 
+		{
+			_homeBtn.clear();
+			Game.instance.showMenu();
 		}
 		
 		private function tweenChildren():void 
@@ -61,16 +63,6 @@ package menus
 		private function enableInput():void 
 		{
 			touchable = true;
-		}
-		
-		private function onBtnTouch(e:TouchEvent):void 
-		{
-			if (e.getTouch(_homeBtn, TouchPhase.ENDED))
-			{
-				removeEventListener(TouchEvent.TOUCH, onBtnTouch);
-				
-				Game.instance.showMenu();
-			}
 		}
 	}
 }

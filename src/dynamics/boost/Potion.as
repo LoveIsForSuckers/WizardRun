@@ -6,6 +6,7 @@ package dynamics.boost
 	import dragonBones.starling.StarlingFactory;
 	import dynamics.boost.BaseBoost;
 	import screens.game.GameScreen;
+	import starling.display.Image;
 	import starling.events.Event;
 
 	public class Potion extends BaseBoost
@@ -59,6 +60,12 @@ package dynamics.boost
 		{
 			Game.instance.playSound("potion");
 			GameScreen.instance.magic.boost(1000);
+		}
+		
+		override public function get preview():Image 
+		{
+			var result:Image = new Image(Assets.instance.manager.getTexture("potionPreview"));
+			return result;
 		}
 	}
 }

@@ -6,6 +6,7 @@ package dynamics.boost
 	import dragonBones.starling.StarlingFactory;
 	import dynamics.boost.BaseBoost;
 	import screens.game.GameScreen;
+	import starling.display.Image;
 	import starling.events.Event;
 	
 
@@ -61,6 +62,12 @@ package dynamics.boost
 		{
 			Game.instance.playSound("powerup");
 			GameScreen.instance.lives.increase();
+		}
+		
+		override public function get preview():Image 
+		{
+			var result:Image = new Image(Assets.instance.manager.getTexture("lifePreview"));
+			return result;
 		}
 	}
 }
