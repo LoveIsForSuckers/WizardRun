@@ -12,6 +12,7 @@ package screens.editor
 	import starling.events.Event;
 	import ui.components.FrameView;
 	import ui.components.GameButton;
+	import ui.components.GameButtonSkin;
 	import ui.components.TabArea;
 
 	public class EditorScreen extends Sprite implements IScreen 
@@ -27,6 +28,7 @@ package screens.editor
 		private var _toolsArea:Sprite;
 		
 		private var _testFrame:FrameView;
+		private var _testFrameButton:GameButton;
 		
 		public function EditorScreen() 
 		{
@@ -144,7 +146,9 @@ package screens.editor
 			_framesArea = new Sprite();
 			
 			_testFrame = new FrameView(_previewArea);
-			_framesArea.addChild(_testFrame);
+			//_framesArea.addChild(_testFrame);
+			_testFrameButton = new GameButton(onFrameClick, "", _testFrame, [0], GameButtonSkin.SKIN_EMPTY);
+			_framesArea.addChild(_testFrameButton);
 		}
 		
 		private function layout():void 
@@ -168,6 +172,11 @@ package screens.editor
 		private function onPlacementItemClick(item:GameObject):void 
 		{
 			trace("Clicked", getQualifiedClassName(item));
+		}
+		
+		private function onFrameClick(frameId:int):void 
+		{
+			trace("Clicked frame", frameId);
 		}
 		
 		public function deactivate():void 
