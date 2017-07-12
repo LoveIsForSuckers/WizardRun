@@ -30,12 +30,12 @@ package screens.game
 		static public const START_SPEED:int = 800;
 		static public const SPEED_INCREASE_FRAMES_INTERVAL:int = 240;
 		static public const SPEED_INCREASE_VALUE:int = 50;
-		static public const BLOCK_WIDTH:int = 2400;
+		static public const BLOCK_WIDTH:int = 2000;
 		
 		static public const MAX_LEVEL:int = 1;
-		static public const FLOOR_Y:int = 1544;
+		static public const FLOOR_Y:int = 1244;
 		static public const MIN_X:int = 100;
-		static public const MAX_X:int = 2300;
+		static public const MAX_X:int = 1900;
 		
 		static private var _instance:GameScreen;
 		
@@ -95,19 +95,19 @@ package screens.game
 			
 			if (!_scoreTF)
 			{
-				_scoreTF = new TextField(600, UI_PADDING * 0.5, "Очки: 0");
+				_scoreTF = new TextField(500, UI_PADDING * 0.5, "Очки: 0");
 				_scoreTF.x = stage.stageWidth - _scoreTF.width;
 				_scoreTF.y = FLOOR_Y;
-				_scoreTF.format.size = 64;
+				_scoreTF.format.size = 56;
 				_scoreTF.format.color = 0xFFFFFF;
 				addChild(_scoreTF);
 			}
 			
 			if (!_distanceTF)
 			{
-				_distanceTF = new TextField(600, UI_PADDING * 0.5, "Дист: 0");
+				_distanceTF = new TextField(500, UI_PADDING * 0.5, "Дист: 0");
 				_distanceTF.x = stage.stageWidth - _distanceTF.width;
-				_distanceTF.format.size = 64;
+				_distanceTF.format.size = 56;
 				_distanceTF.format.color = 0xFFFFFF;
 				_distanceTF.y = _scoreTF.y - _distanceTF.height;
 				addChild(_distanceTF);
@@ -149,7 +149,7 @@ package screens.game
 				_magic = new Magic(this)
 				addChild(_magic);
 				
-				_magic.y = FLOOR_Y;
+				_magic.y = FLOOR_Y + 15;
 				_magic.x = (stage.stageWidth - _magic.width) * 0.5;
 			}
 			else
@@ -162,7 +162,8 @@ package screens.game
 				_lives = new Lives();
 				addChild(_lives);
 				
-				_lives.y = FLOOR_Y;
+				_lives.x = 15;
+				_lives.y = FLOOR_Y + 15;
 			}
 			else
 			{

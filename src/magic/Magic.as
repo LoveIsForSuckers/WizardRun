@@ -44,14 +44,15 @@ package magic
 			_barMask.scaleX = 0;
 			
 			_abilities[0] = new magic.Ability(new Image(Assets.instance.manager.getTexture("ghost")),
-					Assets.instance.manager.getSound("deepwhoosh"), ghostCast, "Q", 800, 1450);
-			_abilities[0].y = _barBg.y + _barBg.height;
+					Assets.instance.manager.getSound("deepwhoosh"), ghostCast, "Q", 800, 1550);
+			_abilities[0].y = _barBg.y + _barBg.height + 15;
+			_abilities[0].x -= 8;
 			addChild(_abilities[0]);
 			
 			_abilities[1] = new magic.Ability(new Image(Assets.instance.manager.getTexture("slow")),
-					Assets.instance.manager.getSound("rewind"), slowCast, "W", 1600, 3120);
-			_abilities[1].x = _abilities[0].x + _abilities[0].width + 30;
-			_abilities[1].y = _barBg.y + _barBg.height;
+					Assets.instance.manager.getSound("rewind"), slowCast, "W", 1600, 3220);
+			_abilities[1].x = _abilities[0].x + _abilities[0].width + 12;
+			_abilities[1].y = _barBg.y + _barBg.height + 15;
 			addChild(_abilities[1]);
 		}
 		

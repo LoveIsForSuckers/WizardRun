@@ -54,17 +54,17 @@ package menus
 			_logo.x = (stage.stageWidth - _logo.width) * 0.5;
 			_logo.y = -_logo.height;
 			_logo.alpha = 0;
-			TweenLite.to(_logo, 1, { y: (stage.stageHeight - _logo.height) * 0.1, alpha: 1, onComplete: tweenChildren } );
+			TweenLite.to(_logo, 1, { y: 40, alpha: 1, onComplete: tweenChildren } );
 			addChild(_logo);
 			
 			_startBtn = new GameButton(onStartBtnClick, "Начать");
 			_startBtn.x = -_startBtn.width;
-			_startBtn.y = (stage.stageHeight - _logo.height) * 0.1 + _logo.height;
+			_startBtn.y = _logo.height + 80;
 			addChild(_startBtn);
 			
 			_editorBtn = new GameButton(onEditorBtnClick, "Редактор");
 			_editorBtn.x = -_editorBtn.width;
-			_editorBtn.y =  _startBtn.y + _startBtn.height + 0.2 * _editorBtn.height;
+			_editorBtn.y =  _startBtn.y + _startBtn.height + 0.1 * _editorBtn.height;
 			addChild(_editorBtn);
 			
 			_muteIcon = new Image(Assets.instance.manager.getTexture("sound"));
@@ -72,7 +72,7 @@ package menus
 				_muteIcon.texture = Assets.instance.manager.getTexture("mute");
 			_muteBtn = new GameButton(onMuteBtnClick, "", _muteIcon);
 			_muteBtn.x = stage.stageWidth + _muteBtn.width;
-			_muteBtn.y = _editorBtn.y + _editorBtn.height + 0.2 * _muteBtn.height;
+			_muteBtn.y = _editorBtn.y + _editorBtn.height + 0.1 * _muteBtn.height;
 			addChild(_muteBtn);
 			
 			_fullScreenIcon = new Image(Assets.instance.manager.getTexture("toFullscreen"));
@@ -81,15 +81,17 @@ package menus
 			_fullScreenBtn = new GameButton(onFullScreenBtnClick, "", _fullScreenIcon);
 			_fullScreenBtn.processEarlyClick = true;
 			_fullScreenBtn.x = _muteBtn.x + _muteBtn.width + 30;
-			_fullScreenBtn.y = _editorBtn.y + _editorBtn.height + 0.2 * _fullScreenBtn.height;
+			_fullScreenBtn.y = _editorBtn.y + _editorBtn.height + 0.1 * _fullScreenBtn.height;
 			addChild(_fullScreenBtn);
 			
 			var infoString:String = "Wizard Run отображается с помощью: " + Starling.current.context.driverInfo + "\n" +
 					"Музыка: Kevin MacLeod - Dubakupado  (incompetech.com) (CC BY 3.0)\n" +
 					"Иконки: Silviu Runceanu, Dave Gandy (flaticon.com) (CC BY 3.0)";
-			_infoText = new TextField(stage.stageWidth, 256, infoString);
+			_infoText = new TextField(stage.stageWidth * 0.6, 192, infoString);
 			_infoText.format.font = "f_default";
+			_infoText.format.bold = true;
 			_infoText.format.size = 28;
+			_infoText.x = (stage.stageWidth - _infoText.width) * 0.5;
 			_infoText.y = stage.stageHeight + _infoText.height;
 			addChild(_infoText);
 			
@@ -100,8 +102,8 @@ package menus
 		{
 			TweenLite.to(_startBtn, 1, { x: _logo.x + (_logo.width - _startBtn.width) * 0.5, ease: Back.easeInOut });
 			TweenLite.to(_editorBtn, 1, { x: _logo.x + (_logo.width - _editorBtn.width) * 0.5, ease: Back.easeInOut });
-			TweenLite.to(_muteBtn, 1, { x: _logo.x + (_logo.width - _muteBtn.width) * 0.38, ease: Back.easeInOut } );
-			TweenLite.to(_fullScreenBtn, 1, { x: _logo.x + (_logo.width - _fullScreenBtn.width) * 0.62, ease: Back.easeInOut } );
+			TweenLite.to(_muteBtn, 1, { x: _logo.x + (_logo.width - _muteBtn.width) * 0.3, ease: Back.easeInOut } );
+			TweenLite.to(_fullScreenBtn, 1, { x: _logo.x + (_logo.width - _fullScreenBtn.width) * 0.7, ease: Back.easeInOut } );
 			TweenLite.to(_infoText, 1, { y: stage.stageHeight - _infoText.height, onComplete: enableInput});
 		}
 		

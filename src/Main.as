@@ -30,8 +30,8 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			_starling = new Starling(Game, stage);
-			_starling.stage.stageWidth = 2400;
-			_starling.stage.stageHeight = 1800;
+			_starling.stage.stageWidth = 2000;
+			_starling.stage.stageHeight = 1500;
 			//_starling.showStatsAt("left", "bottom", 2.4);
 			_starling.start();
 			
@@ -47,13 +47,13 @@ package
 			{
 				var error:Sprite = new Sprite();
 				error.graphics.beginFill(0x550000);
-				error.graphics.drawRect(0, 0, 2400, 1800);
+				error.graphics.drawRect(0, 0, 2000, 1500);
 				error.graphics.endFill();
 				var errorText:TextField = new TextField();
 				errorText.x = 100;
 				errorText.y = 100;
-				errorText.width = 2200;
-				errorText.height = 1600;
+				errorText.width = 1800;
+				errorText.height = 1300;
 				errorText.wordWrap = true;
 				errorText.selectable = true;
 				errorText.text = "ОШИБКА 1: Не удалось создать 3D-контекст! \n\n Возможные причины: \n" +
