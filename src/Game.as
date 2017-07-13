@@ -107,7 +107,7 @@ package
 			EditorScreen.instance.activate(_screenLayer);
 		}
 		
-		public function startGame():void 
+		public function startGame(levelData:Object = null):void 
 		{
 			_music = Assets.instance.manager.playSound('dubakupado', 0, 50, _soundTransform);
 			
@@ -117,6 +117,7 @@ package
 				new GameScreen();
 			
 			GameScreen.instance.activate(_screenLayer);
+			GameScreen.instance.startGame(levelData);
 		}
 		
 		private function tryClearMenus():void 

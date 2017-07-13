@@ -54,7 +54,11 @@ package dynamics.boost
 		{
 			_armature.advanceTime(deltaTime);
 			
-			x -= _speed * deltaTime;
+			if (x > GameScreen.MAX_X)
+				x -= 5 * _speed * deltaTime;
+			else
+				x -= _speed * deltaTime;
+			
 			y = 150 * Math.sin(x / 150) + _startY; 
 		}
 		
@@ -68,6 +72,11 @@ package dynamics.boost
 		{
 			var result:Image = new Image(Assets.instance.manager.getTexture("lifePreview"));
 			return result;
+		}
+		
+		override public function get internalName():String 
+		{
+			return "life";
 		}
 	}
 }

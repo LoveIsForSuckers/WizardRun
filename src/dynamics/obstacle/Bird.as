@@ -4,7 +4,9 @@ package dynamics.obstacle
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import dynamics.GameObject;
 	import dynamics.obstacle.BaseObstacle;
+	import screens.game.GameScreen;
 	import starling.display.DisplayObject;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -54,7 +56,10 @@ package dynamics.obstacle
 		{
 			_armature.advanceTime(deltaTime);
 			
-			x -= _speed * deltaTime;
+			if (x > GameScreen.MAX_X)
+				x -= 0.75 * _speed * deltaTime;
+			else
+				x -= _speed * deltaTime;
 		}
 		
 		override public function onImpact():void 
@@ -76,6 +81,11 @@ package dynamics.obstacle
 		{
 			var result:Image = new Image(Assets.instance.manager.getTexture("birdPreview"));
 			return result;
+		}
+		
+		override public function get internalName():String 
+		{
+			return "bird";
 		}
 	}
 }

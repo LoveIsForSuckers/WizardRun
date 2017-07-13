@@ -8,6 +8,7 @@ package ui.components
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.RenderTexture;
+	import ui.IMeasurable;
 	
 
 	public class FrameView extends Sprite 
@@ -41,13 +42,24 @@ package ui.components
 		
 		public function redraw(e:Event = null):void
 		{
-			var matScale:Number = _border.width / _renderSource.width;
+			var sourceWidth:int = (_renderSource is IMeasurable) ? (_renderSource as IMeasurable).baseWidth : _renderSource.width;
+			
+			// matrix.translate does not work for some reason?
+			var sourceX:int = _renderSource.x;
+			var sourceY:int = _renderSource.y;
+			_renderSource.x = 0;
+			_renderSource.y = 0;
+			
+			var matScale:Number = _border.width / sourceWidth;
 			var mat:Matrix = new Matrix();
 			mat.copyFrom(_renderSource.transformationMatrix);
 			mat.scale(matScale, matScale);
 			
 			_texture.draw(_renderSource, mat);
 			_renderView.texture = _texture;
+			
+			_renderSource.x = sourceX;
+			_renderSource.y = sourceY;
 		}
 		
 		public function clear():void 

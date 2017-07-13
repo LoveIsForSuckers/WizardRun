@@ -13,9 +13,10 @@ package level
 			_instance = this;
 		}
 		
-		public function load(levelId:int):void
+		public function load(levelData:Object = null):void
 		{
-			var levelData:Object = Assets.instance.manager.getObject("testlevel");
+			if (!levelData)
+				levelData = Assets.instance.manager.getObject("testlevel");
 			
 			// TODO: make levels, load level by id
 			

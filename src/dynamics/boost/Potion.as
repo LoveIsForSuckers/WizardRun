@@ -53,7 +53,10 @@ package dynamics.boost
 		{
 			_armature.advanceTime(deltaTime);
 			
-			x -= _speed * deltaTime;
+			if (x > GameScreen.MAX_X)
+				x -= 5 * _speed * deltaTime;
+			else
+				x -= _speed * deltaTime;
 		}
 		
 		override public function onPickUp():void 
@@ -66,6 +69,11 @@ package dynamics.boost
 		{
 			var result:Image = new Image(Assets.instance.manager.getTexture("potionPreview"));
 			return result;
+		}
+		
+		override public function get internalName():String 
+		{
+			return "potion";
 		}
 	}
 }

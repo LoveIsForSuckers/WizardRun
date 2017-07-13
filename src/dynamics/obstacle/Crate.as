@@ -74,5 +74,10 @@ package dynamics.obstacle
 			var result:Image = new Image(Assets.instance.manager.getTexture("cratePreview"));
 			return result;
 		}
+		
+		override public function get internalName():String 
+		{
+			return "crate";
+		}
 	}
 }

@@ -112,8 +112,6 @@ package screens.game
 				_distanceTF.y = _scoreTF.y - _distanceTF.height;
 				addChild(_distanceTF);
 			}
-			
-			startGame();
 		}
 		
 		public function deactivate():void 
@@ -121,7 +119,7 @@ package screens.game
 			_layer.removeChild(this);
 		}
 		
-		private function startGame():void 
+		public function startGame(levelData:Object = null):void 
 		{
 			_levelId = 1;
 			_time = 0;
@@ -172,7 +170,7 @@ package screens.game
 			
 			if (!_spawnLogic)
 				_spawnLogic = new SpawnLogic();
-			_spawnLogic.load(_levelId);
+			_spawnLogic.load(levelData);
 			
 			var i:int;
 			if (_obstacles.length > 0)

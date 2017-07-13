@@ -25,15 +25,18 @@ package background
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			_bgCloudsLayer = new BgLayer(Assets.instance.manager.getTexture("clouds1"));
-			_bgCloudsLayer.parallax = 0.05;
+			//_bgCloudsLayer.parallax = 0.05;
+			_bgCloudsLayer.parallax = 1;
 			addChild(_bgCloudsLayer);
 			
 			_bgHillsLayer = new BgLayer(Assets.instance.manager.getTexture("hills1"));
-			_bgHillsLayer.parallax = 0.25;
+			//_bgHillsLayer.parallax = 0.25;
+			_bgHillsLayer.parallax = 1;
 			addChild(_bgHillsLayer);
 			
 			_bgTreesLayer = new BgLayer(Assets.instance.manager.getTexture("trees1"));
-			_bgTreesLayer.parallax = 0.5;
+			//_bgTreesLayer.parallax = 0.5;
+			_bgTreesLayer.parallax = 1;
 			addChild(_bgTreesLayer);
 			
 			_bgPathLayer = new BgLayer(Assets.instance.manager.getTexture("path1"));

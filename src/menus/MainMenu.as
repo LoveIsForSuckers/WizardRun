@@ -115,7 +115,6 @@ package menus
 		private function onFullScreenBtnClick():void 
 		{
 			Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_UP, toggleFullScreen);
-			trace("add");
 		}
 		
 		private function onMuteBtnClick():void 
@@ -143,7 +142,6 @@ package menus
 		private function toggleFullScreen(e:MouseEvent):void
 		{
 			Starling.current.nativeStage.removeEventListener(MouseEvent.MOUSE_UP, toggleFullScreen);
-			trace("rm");
 			
 			if (Starling.current.nativeStage.displayState == StageDisplayState.NORMAL)
 			{

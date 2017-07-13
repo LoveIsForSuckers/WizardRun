@@ -3,13 +3,19 @@ package screens.editor
 	import dynamics.GameObject;
 	import dynamics.MechanicsLibrary;
 	import dynamics.boost.BaseBoost;
+	import dynamics.boost.IBoost;
 	import dynamics.obstacle.BaseObstacle;
-	import flash.utils.getQualifiedClassName;
+	import dynamics.obstacle.IObstacle;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import screens.IScreen;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import ui.components.FrameView;
 	import ui.components.GameButton;
 	import ui.components.GameButtonSkin;
@@ -23,12 +29,19 @@ package screens.editor
 		
 		private var _bg:Quad;
 		
-		private var _previewArea:Sprite;
+		private var _previewBorder:Image;
+		private var _previewArea:PreviewArea;
 		private var _framesArea:Sprite;
 		private var _toolsArea:Sprite;
 		
+		private var _lvlBgId:int;
+		private var _draggedItem:GameObject;
+		
 		private var _testFrame:FrameView;
 		private var _testFrameButton:GameButton;
+		
+		private var _testLevelData:Object;
+		private var _testLevelButton:GameButton;
 		
 		public function EditorScreen() 
 		{
@@ -129,16 +142,15 @@ package screens.editor
 		
 		private function buildPreviewArea():void 
 		{
-			_previewArea = new Sprite();
+			_lvlBgId = 2;
 			
-			var bigQuad:Quad = new Quad(1000, 750, 0x99AAFF);
-			_previewArea.addChild(bigQuad);
+			_previewArea = new PreviewArea(_lvlBgId);
 			
-			var smallQuad:Quad = new Quad(96, 96);
-			smallQuad.rotation = Math.PI / 4;
-			smallQuad.x = 0.5 * (bigQuad.width - smallQuad.width);
-			smallQuad.y = 0.5 * (bigQuad.height - smallQuad.height);
-			_previewArea.addChild(smallQuad);
+			
+			
+			_previewBorder = new Image(Assets.instance.manager.getTexture("border"));
+			_previewBorder.scale9Grid = new Rectangle(7, 7, 2, 178);
+			_previewBorder.touchable = false;
 		}
 		
 		private function buildFramesArea():void 
@@ -146,37 +158,128 @@ package screens.editor
 			_framesArea = new Sprite();
 			
 			_testFrame = new FrameView(_previewArea);
-			//_framesArea.addChild(_testFrame);
 			_testFrameButton = new GameButton(onFrameClick, "", _testFrame, [0], GameButtonSkin.SKIN_EMPTY);
 			_framesArea.addChild(_testFrameButton);
+			
+			_testLevelButton = new GameButton(onTestLevelClick, "Тест уровня");
+			_testLevelButton.x = stage.stageWidth - _testLevelButton.width - 40;
+			_testLevelButton.y = _testFrameButton.y + _testFrameButton.height + 20;
+			_framesArea.addChild(_testLevelButton);
 		}
 		
 		private function layout():void 
 		{
 			addChild(_previewArea);
+			addChild(_previewBorder);
 			addChild(_framesArea);
 			addChild(_toolsArea);
 			
 			_toolsArea.x = stage.stageWidth - _toolsArea.width - 20;
 			
-			_previewArea.x = 20;
-			_previewArea.y = 20;
+			_previewArea.x = 26;
+			_previewArea.y = 19;
 			_previewArea.width = stage.stageWidth - _toolsArea.width - 60;
 			_previewArea.height = _previewArea.height * _previewArea.scaleX;
 			_testFrame.redraw();
 			
+			_previewBorder.width = _previewArea.width + 12;
+			_previewBorder.height = _previewArea.height + 4;
+			_previewBorder.x = _previewArea.x - 6;
+			_previewBorder.y = _previewArea.y;
+			
 			_framesArea.x = 20;
-			_framesArea.y = _previewArea.y + _previewArea.height + 20;
+			_framesArea.y = _previewBorder.y + _previewBorder.height + 20;
 		}
 		
 		private function onPlacementItemClick(item:GameObject):void 
 		{
-			trace("Clicked", getQualifiedClassName(item));
+			var realClass:Class = Object(item).constructor;
+			_draggedItem = new realClass(0, 0, 0);
+			_draggedItem.scale = 0.25;
+			_draggedItem.touchable = false;
+			addChild(_draggedItem);
+			
+			addEventListener(TouchEvent.TOUCH, onDragEvent);
+		}
+		
+		private function onDragEvent(e:TouchEvent):void 
+		{
+			var touch:Touch;
+			if (e.getTouch(_previewArea, TouchPhase.ENDED))
+			{
+				// ATTACH
+				removeEventListener(TouchEvent.TOUCH, onDragEvent);
+				removeChild(_draggedItem);
+				_draggedItem.scale = 0.5;
+				_previewArea.addChild(_draggedItem);
+				
+				var prvScale:Number = 0.5;
+				touch = e.getTouch(_previewArea);
+				var touchPoint:Point = touch.getLocation(_previewArea);
+				_draggedItem.x = touchPoint.x;
+				_draggedItem.y = touchPoint.y;
+				
+				var scaledX:int = _draggedItem.x / prvScale;
+				var scaledY:int = _draggedItem.y / prvScale;
+				
+				_testFrame.redraw();
+				
+				// TODO: extract logic
+				if (!_testLevelData)
+				{
+					_testLevelData = new Object();
+					_testLevelData.name = "EditorTest";
+					_testLevelData.repeatFrom = 0;
+					_testLevelData.blocks = [new Object()];
+					_testLevelData.blocks[0].type = "editorTest";
+					_testLevelData.blocks[0].obstacles = [];
+					_testLevelData.blocks[0].boosts = [];
+				}
+				
+				var dataItem:Object = new Object();
+				dataItem.type = _draggedItem.internalName;
+				dataItem.x = scaledX;
+				dataItem.y = scaledY;
+				if (_draggedItem is IBoost)
+				{
+					_testLevelData.blocks[0].boosts.push(dataItem);
+				}
+				else if (_draggedItem is IObstacle)
+				{
+					_testLevelData.blocks[0].obstacles.push(dataItem);
+				}
+				
+				_draggedItem = null;
+			}
+			else if (e.getTouch(_toolsArea, TouchPhase.ENDED))
+			{
+				// DISCARD
+				removeEventListener(TouchEvent.TOUCH, onDragEvent);
+				removeChild(_draggedItem);
+				_draggedItem = null;
+			}
+			else
+			{
+				// MOVE
+				touch = e.getTouch(this);
+				if (!touch)
+					return;
+				
+				_draggedItem.x = touch.globalX;
+				_draggedItem.y = touch.globalY;
+			}
 		}
 		
 		private function onFrameClick(frameId:int):void 
 		{
 			trace("Clicked frame", frameId);
+		}
+		
+		private function onTestLevelClick():void 
+		{
+			deactivate();
+			
+			Game.instance.startGame(_testLevelData);
 		}
 		
 		public function deactivate():void 

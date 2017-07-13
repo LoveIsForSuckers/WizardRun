@@ -72,5 +72,10 @@ package dynamics.obstacle
 			var result:Image = new Image(Assets.instance.manager.getTexture("boulderPreview"));
 			return result;
 		}
+		
+		override public function get internalName():String 
+		{
+			return "boulder";
+		}
 	}
 }

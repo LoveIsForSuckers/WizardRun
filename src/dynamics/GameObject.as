@@ -44,6 +44,11 @@ package dynamics
 		{
 			return null;
 		}
+		
+		public function get internalName():String 
+		{
+			return null;
+		}
 	}
 	
 }
