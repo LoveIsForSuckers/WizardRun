@@ -1,5 +1,6 @@
 package background
 {
+	import assets.Assets;
 	import starling.display.Sprite;
 	import starling.events.EnterFrameEvent;
 	import starling.events.Event;

@@ -1,4 +1,4 @@
-package
+package root
 {
 	import com.greensock.TweenLite;
 	import flash.display.Sprite;
@@ -12,27 +12,33 @@ package
 	
 	/**
 	 * ...
-	 * @author Love is for Suckers
+	 * @author Love is for Suckers (aka dartyushin/Dmitriy Artyushin/MiteXXX)
 	 */
-	[SWF(width="1000", height="750", frameRate="60", backgroundColor="#000000")]
-	public class Main extends Sprite 
+	public class BaseRoot extends Sprite 
 	{
-		private var _starling:Starling;
+		protected var _starling:Starling;
 		
-		public function Main() 
+		private var _gameWidth:int;
+		private var _gameHeight:int;
+		private var _gameInternalScale:Number;
+		
+		public function BaseRoot(gameWidth:int, gameHeight:int, gameInternalScale:Number) 
 		{
+			_gameWidth = gameWidth;
+			_gameHeight = gameHeight;
+			_gameInternalScale = gameInternalScale;
+			
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-		private function init(e:Event = null):void 
+		protected function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			_starling = new Starling(Game, stage);
-			_starling.stage.stageWidth = 2000;
-			_starling.stage.stageHeight = 1500;
-			//_starling.showStatsAt("left", "bottom", 2.4);
+			_starling.stage.stageWidth = _gameWidth * _gameInternalScale;
+			_starling.stage.stageHeight = _gameHeight * _gameInternalScale;
 			_starling.start();
 			
 			_starling.stage.addEventListener(ResizeEvent.RESIZE, onResize);
@@ -47,13 +53,13 @@ package
 			{
 				var error:Sprite = new Sprite();
 				error.graphics.beginFill(0x550000);
-				error.graphics.drawRect(0, 0, 2000, 1500);
+				error.graphics.drawRect(0, 0, _gameWidth * _gameInternalScale, _gameHeight * _gameInternalScale);
 				error.graphics.endFill();
 				var errorText:TextField = new TextField();
 				errorText.x = 100;
 				errorText.y = 100;
-				errorText.width = 1800;
-				errorText.height = 1300;
+				errorText.width = (_gameWidth - 100) * _gameInternalScale;
+				errorText.height = (_gameHeight - 100) * _gameInternalScale;
 				errorText.wordWrap = true;
 				errorText.selectable = true;
 				errorText.text = "ОШИБКА 1: Не удалось создать 3D-контекст! \n\n Возможные причины: \n" +
@@ -81,20 +87,20 @@ package
 			
 			var heightToWidth:Number = e.height / e.width;
 			
-			if (e.width < 1000 || heightToWidth > (3 / 4))
+			if (e.width < _gameWidth || heightToWidth > (3 / 4))
 			{
 				width = e.width;
 				height = e.width * 3 / 4;
 			}
-			else if (e.height < 750 || heightToWidth <= (3 / 4))
+			else if (e.height < _gameHeight || heightToWidth <= (3 / 4))
 			{
 				height = e.height;
 				width = e.height * 4 / 3;
 			}
 			else
 			{
-				height = 1000;
-				width = 750;
+				height = _gameHeight;
+				width = _gameWidth;
 			}
 			
 			if (width < 43)

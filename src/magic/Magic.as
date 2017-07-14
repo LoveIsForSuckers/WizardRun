@@ -1,5 +1,6 @@
 package magic 
 {
+	import assets.Assets;
 	import flash.ui.Keyboard;
 	import magic.Ability;
 	import screens.game.GameScreen;

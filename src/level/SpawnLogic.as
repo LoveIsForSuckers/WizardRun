@@ -1,5 +1,6 @@
 package level 
 {
+	import assets.Assets;
 	public class SpawnLogic 
 	{
 		static private var _instance:SpawnLogic;

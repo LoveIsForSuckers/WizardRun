@@ -1,5 +1,6 @@
 package 
 {
+	import assets.Assets;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
 	import menus.MainMenu;

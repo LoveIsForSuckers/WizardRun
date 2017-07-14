@@ -1,5 +1,6 @@
 package ui.components 
 {
+	import assets.Assets;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import starling.core.Starling;

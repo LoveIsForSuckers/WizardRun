@@ -1,5 +1,6 @@
 package screens.game 
 {
+	import assets.Assets;
 	import background.Background;
 	import com.greensock.TweenLite;
 	import dynamics.boost.BaseBoost;

@@ -1,5 +1,6 @@
 package dynamics 
 {
+	import assets.Assets;
 	import dragonBones.Armature;
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;

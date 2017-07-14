@@ -1,5 +1,6 @@
 package screens.editor 
 {
+	import assets.Assets;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;

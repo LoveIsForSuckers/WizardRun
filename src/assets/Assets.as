@@ -1,4 +1,4 @@
-package 
+package assets 
 {
 	import starling.text.TextField;
 	import starling.utils.AssetManager;

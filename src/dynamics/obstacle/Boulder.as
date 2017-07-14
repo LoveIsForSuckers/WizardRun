@@ -1,5 +1,6 @@
 package dynamics.obstacle 
 {
+	import assets.Assets;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;

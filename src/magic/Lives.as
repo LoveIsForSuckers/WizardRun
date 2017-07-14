@@ -1,5 +1,6 @@
 package magic 
 {
+	import assets.Assets;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;

@@ -1,5 +1,6 @@
 package menus
 {
+	import assets.Assets;
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Back;
 	import flash.display.StageDisplayState;
