@@ -6,10 +6,9 @@ package dynamics.boost
 	public class BaseBoost extends GameObject implements IBoost 
 	{
 		
-		public function BaseBoost(speed:int, startX:int, startY:int) 
+		public function BaseBoost() 
 		{
-			super(speed, startX, startY);
-			
+			super();
 		}
 		
 		/* INTERFACE dynamics.IBoost */

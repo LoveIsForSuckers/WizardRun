@@ -5,6 +5,7 @@ package dynamics.boost
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import dynamics.GameObjectFactory;
 	import dynamics.boost.BaseBoost;
 	import screens.game.GameScreen;
 	import starling.display.Image;
@@ -13,23 +14,26 @@ package dynamics.boost
 
 	public class Life extends BaseBoost
 	{
+		static private const SPEED_MODIFIER:Number = 0.2;
 		static private const ANIMATION_IDLE:String = "idle";
 		
 		private var _armature:Armature;
 		private var _display:StarlingArmatureDisplay;
 		
-		public function Life(gameSpeed:int, startX:int, startY:int) 
+		public function Life() 
 		{
-			super(gameSpeed * 0.2, startX, startY);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			super();
 		}
 		
-		override protected function init(e:Event):void 
+		override public function init(speed:int, startX:int, startY:int):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			super.init(e);
+			super.init(speed, startX, startY);
+			speed *= SPEED_MODIFIER;
+		}
+		
+		override protected function activate(e:Event):void 
+		{
+			super.activate(e);
 			
 			var factory:StarlingFactory = new StarlingFactory();
 			var dbData:DragonBonesData = factory.parseDragonBonesData(Assets.instance.manager.getObject("Life_ske"));
@@ -56,11 +60,11 @@ package dynamics.boost
 			_armature.advanceTime(deltaTime);
 			
 			if (x > GameScreen.MAX_X)
-				x -= 5 * _speed * deltaTime;
+				x -= _speed * deltaTime / SPEED_MODIFIER;
 			else
 				x -= _speed * deltaTime;
 			
-			y = 150 * Math.sin(x / 150) + _startY; 
+			y = 150 * Math.sin(x / 150) + _startY;
 		}
 		
 		override public function onPickUp():void 
@@ -77,7 +81,17 @@ package dynamics.boost
 		
 		override public function get internalName():String 
 		{
-			return "life";
+			return GameObjectFactory.BOOST_LIFE;
+		}
+		
+		override public function get speed():int 
+		{
+			return super.speed;
+		}
+		
+		override public function set speed(value:int):void 
+		{
+			super.speed = value * SPEED_MODIFIER;
 		}
 	}
 }

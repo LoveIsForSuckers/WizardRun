@@ -45,11 +45,11 @@ package
 			
 			function onLoadComplete():void
 			{
-				showMenu();
+				showMainMenu();
 			}
 		}
 		
-		public function showMenu():void
+		public function showMainMenu():void
 		{
 			if (_restartMenu)
 			{

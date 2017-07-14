@@ -56,7 +56,7 @@ package menus
 		{
 			_homeBtn.clear();
 			_restartBtn.clear();
-			Game.instance.showMenu();
+			Game.instance.showMainMenu();
 		}
 		
 		private function onRestartBtnClick():void 

@@ -1,6 +1,7 @@
 package dynamics.obstacle 
 {
 	import assets.Assets;
+	import dynamics.GameObjectFactory;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;
@@ -12,18 +13,14 @@ package dynamics.obstacle
 		private var _image:Image;
 		private var _speedY:int = 0;
 		
-		public function Boulder(gameSpeed:int, startX:int, startY:int) 
+		public function Boulder() 
 		{
-			super(gameSpeed, startX, startY);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			super();
 		}
 		
-		override protected function init(e:Event):void 
+		override protected function activate(e:Event):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			super.init(e);
+			super.activate(e);
 			
 			_image = new Image(Assets.instance.manager.getTexture("boulder"));
 			_image.y = -_image.height - 14;
@@ -76,7 +73,7 @@ package dynamics.obstacle
 		
 		override public function get internalName():String 
 		{
-			return "boulder";
+			return GameObjectFactory.OBSTACLE_BOULDER;
 		}
 	}
 }

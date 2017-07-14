@@ -51,7 +51,7 @@ package menus
 		private function onBtnClick():void 
 		{
 			_homeBtn.clear();
-			Game.instance.showMenu();
+			Game.instance.showMainMenu();
 		}
 		
 		private function tweenChildren():void 

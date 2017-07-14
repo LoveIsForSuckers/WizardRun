@@ -6,6 +6,7 @@ package dynamics.obstacle
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
 	import dynamics.GameObject;
+	import dynamics.GameObjectFactory;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.DisplayObject;
@@ -15,23 +16,26 @@ package dynamics.obstacle
 
 	public class Bird extends BaseObstacle
 	{
+		static private const SPEED_MODIFIER:Number = 1.5;
 		static private const ANIMATION_IDLE:String = "animtion0";
 		
 		private var _armature:Armature;
 		private var _display:StarlingArmatureDisplay;
 		
-		public function Bird(gameSpeed:int, startX:int, startY:int) 
+		public function Bird() 
 		{
-			super(gameSpeed * 1.5, startX, startY);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			super();
 		}
 		
-		override protected function init(e:Event):void 
+		override public function init(speed:int, startX:int, startY:int):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			super.init(e);
+			super.init(speed, startX, startY);
+			_speed *= SPEED_MODIFIER;
+		}
+		
+		override protected function activate(e:Event):void 
+		{
+			super.activate(e);
 			
 			var factory:StarlingFactory = new StarlingFactory();
 			var dbData:DragonBonesData = factory.parseDragonBonesData(Assets.instance.manager.getObject("Bird_ske"));
@@ -58,7 +62,7 @@ package dynamics.obstacle
 			_armature.advanceTime(deltaTime);
 			
 			if (x > GameScreen.MAX_X)
-				x -= 0.75 * _speed * deltaTime;
+				x -= _speed * deltaTime / SPEED_MODIFIER;
 			else
 				x -= _speed * deltaTime;
 		}
@@ -75,7 +79,7 @@ package dynamics.obstacle
 		
 		override public function set speed(value:int):void 
 		{
-			super.speed = 1.5 * value;
+			super.speed = SPEED_MODIFIER * value;
 		}
 		
 		override public function get preview():Image 
@@ -86,7 +90,7 @@ package dynamics.obstacle
 		
 		override public function get internalName():String 
 		{
-			return "bird";
+			return GameObjectFactory.OBSTACLE_BIRD;
 		}
 	}
 }

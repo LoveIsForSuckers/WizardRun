@@ -11,23 +11,26 @@ package dynamics
 
 	public class Portal extends GameObject 
 	{
+		static private const SPEED_MODIFIER:Number = 0.2;
 		static private const ANIMATION_IDLE:String = "animtion0";
 		
 		private var _armature:Armature;
 		private var _display:StarlingArmatureDisplay;
 		
-		public function Portal(gameSpeed:int, startX:int, startY:int = 800) 
+		public function Portal() 
 		{
-			super(gameSpeed * 0.2, startX, startY);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			super();
 		}
 		
-		override protected function init(e:Event):void
+		override public function init(speed:int, startX:int, startY:int):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			super.init(e);
+			super.init(speed, startX, startY);
+			_speed *= SPEED_MODIFIER;
+		}
+		
+		override protected function activate(e:Event):void
+		{
+			super.activate(e);
 			
 			var factory:StarlingFactory = new StarlingFactory();
 			var dbData:DragonBonesData = factory.parseDragonBonesData(Assets.instance.manager.getObject("Portal_ske"));
@@ -54,6 +57,11 @@ package dynamics
 			_armature.advanceTime(deltaTime);
 			x -= _speed * deltaTime;
 			y = 300 * Math.sin(x / 600) + _startY; 
+		}
+		
+		override public function get internalName():String 
+		{
+			return GameObjectFactory.SYSTEM_PORTAL;
 		}
 	}
 }

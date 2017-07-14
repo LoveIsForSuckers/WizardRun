@@ -32,6 +32,7 @@ package ui.components
 			_border.width = ratio * _border.height;
 			
 			_texture = new RenderTexture(_border.width, _border.height, false);
+			_texture.clear(0, 1);
 			_renderView = new Image(_texture);
 			redraw();
 			

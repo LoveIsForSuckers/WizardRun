@@ -12,15 +12,22 @@ package dynamics
 		protected var _speed:int;
 		//protected var _hitBounds:Rectangle; // TODO
 		
-		public function GameObject(speed:int, startX:int, startY:int)
+		public function GameObject()
+		{
+			addEventListener(Event.ADDED_TO_STAGE, activate);
+		}
+		
+		public function init(speed:int, startX:int, startY:int):void 
 		{
 			_speed = speed;
 			_startX = startX;
 			_startY = startY;
 		}
 		
-		protected function init(e:Event):void
+		protected function activate(e:Event):void
 		{
+			removeEventListener(Event.ADDED_TO_STAGE, activate);
+			
 			x = _startX;
 			y = _startY;
 		}

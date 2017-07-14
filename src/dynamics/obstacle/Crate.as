@@ -1,6 +1,7 @@
 package dynamics.obstacle 
 {
 	import assets.Assets;
+	import dynamics.GameObjectFactory;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;
@@ -11,26 +12,19 @@ package dynamics.obstacle
 		private var _image:Image;
 		private var _speedY:int = 0;
 		
-		public function Crate(gameSpeed:int, startX:int, startY:int) 
+		public function Crate() 
 		{
-			super(gameSpeed, startX, startY);
-			
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			super();
 		}
 		
-		override protected function init(e:Event):void 
+		override protected function activate(e:Event):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			super.init(e);
+			super.activate(e);
 			
 			_image = new Image(Assets.instance.manager.getTexture("crate"));
 			_image.y = -_image.height - 14;
 			_image.x = -_image.width * 0.5;
 			addChild(_image);
-			
-			//x = Game.MAX_X + width;
-			//y = Math.random() * Game.FLOOR_Y;
 		}
 		
 		override public function update(deltaTime:Number):void
@@ -78,7 +72,7 @@ package dynamics.obstacle
 		
 		override public function get internalName():String 
 		{
-			return "crate";
+			return GameObjectFactory.OBSTACLE_CRATE;
 		}
 	}
 }

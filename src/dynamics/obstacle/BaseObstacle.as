@@ -5,14 +5,9 @@ package dynamics.obstacle
 
 	public class BaseObstacle extends GameObject implements IObstacle 
 	{
-		public function BaseObstacle(speed:int, startX:int, startY:int) 
+		public function BaseObstacle() 
 		{
-			super(speed, startX, startY);
-		}
-		
-		override protected function init(e:Event):void 
-		{
-			super.init(e);
+			super();
 		}
 		
 		/* INTERFACE dynamics.IObstacle */

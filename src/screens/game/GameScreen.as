@@ -344,7 +344,8 @@ package screens.game
 		{
 			Game.instance.playSound("teleport");
 			
-			_portal = new Portal(_gameSpeed, BLOCK_WIDTH);
+			_portal = new Portal();
+			_portal.init(_gameSpeed, BLOCK_WIDTH, 800);
 			addChild(_portal);
 		}
 		
