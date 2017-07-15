@@ -9,6 +9,8 @@ package screens.editor
 	import dynamics.obstacle.IObstacle;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.FileReference;
+	import root.BaseRoot;
 	import screens.IScreen;
 	import screens.game.GameScreen;
 	import starling.display.Image;
@@ -18,9 +20,7 @@ package screens.editor
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import ui.components.FrameView;
 	import ui.components.GameButton;
-	import ui.components.GameButtonSkin;
 	import ui.components.TabArea;
 
 	public class EditorScreen extends Sprite implements IScreen 
@@ -37,19 +37,18 @@ package screens.editor
 		private var _previewBorder:Image;
 		private var _controlsArea:Sprite;
 		private var _previewArea:PreviewArea;
-		private var _framesArea:Sprite;
+		private var _framesArea:FramesArea;
 		private var _toolsArea:Sprite;
 		
 		private var _lvlBgId:int;
-		private var _currentFrameId:int;
 		private var _draggedItem:GameObject;
+		private var _levelData:Object;
 		
-		private var _testFrame:FrameView;
-		private var _testFrameButton:GameButton;
-		
-		private var _testLevelData:Object;
 		private var _testLevelButton:GameButton;
 		private var _backButton:GameButton;
+		private var _clearButton:GameButton;
+		private var _saveButton:GameButton;
+		private var _loadButton:GameButton;
 		
 		public function EditorScreen() 
 		{
@@ -74,7 +73,9 @@ package screens.editor
 			buildPreviewArea();
 			buildFramesArea();
 			layout();
-			tryRestorePreview();
+			
+			tryRestoreFrames();
+			tryRestorePreview(0);
 		}
 		
 		private function buildToolsArea():void 
@@ -92,8 +93,9 @@ package screens.editor
 			{
 				var obst:BaseObstacle = new type();
 				child = obst.preview;
-				button = new GameButton(onPlacementItemClick, "", child, [obst]);
+				button = new GameButton(onPlacementClick, "", child, [obst]);
 				obstacleContent.addChild(button);
+				button.scale = 0.8;
 				button.x = itemX;
 				button.y = itemY;
 				button.height += 15;
@@ -120,7 +122,8 @@ package screens.editor
 			{
 				var boost:BaseBoost = new type();
 				child = boost.preview
-				button = new GameButton(onPlacementItemClick, "", child, [boost]);
+				button = new GameButton(onPlacementClick, "", child, [boost]);
+				button.scale = 0.8;
 				boostContent.addChild(button);
 				button.x = itemX;
 				button.height += 15;
@@ -163,21 +166,29 @@ package screens.editor
 		
 		private function buildFramesArea():void 
 		{
-			_framesArea = new Sprite();
-			
-			_testFrame = new FrameView(_previewArea);
-			_testFrameButton = new GameButton(onFrameClick, "", _testFrame, [0], GameButtonSkin.SKIN_EMPTY);
-			_framesArea.addChild(_testFrameButton);
+			_framesArea = new FramesArea();
 		}
 		
 		private function buildControlsArea():void 
 		{
 			_controlsArea = new Sprite();
 			
-			_backButton = new GameButton(onBackClick, "В меню");
+			_backButton = new GameButton(onBackClick, "В меню", new Image(Assets.instance.manager.getTexture("iconLeft")));
 			_controlsArea.addChild(_backButton);
 			
-			_testLevelButton = new GameButton(onTestLevelClick, "Тест уровня");
+			_clearButton = new GameButton(onNewLevelClick, "Новый");
+			_clearButton.x = _backButton.x + _backButton.width + 10;
+			_controlsArea.addChild(_clearButton);
+			
+			_saveButton = new GameButton(onSaveLevelClick, "Сохранить");
+			_saveButton.x = _clearButton.x + _clearButton.width + 20;
+			_controlsArea.addChild(_saveButton);
+			
+			_loadButton = new GameButton(onLoadLevelClick, "Загрузить");
+			_loadButton.x = _saveButton.x + _saveButton.width + 20;
+			_controlsArea.addChild(_loadButton);
+			
+			_testLevelButton = new GameButton(onTestLevelClick, "Тест", new Image(Assets.instance.manager.getTexture("iconRight")))
 			_testLevelButton.x = stage.stageWidth - _testLevelButton.width - 40;
 			_controlsArea.addChild(_testLevelButton);
 		}
@@ -200,7 +211,7 @@ package screens.editor
 			_previewArea.y = _controlsArea.y + _controlsArea.height + 40;
 			_previewArea.width = stage.stageWidth - _toolsArea.width - 70;
 			_previewArea.height = _previewArea.height * _previewArea.scaleX;
-			_testFrame.redraw();
+			_framesArea.redrawCurrentFrame();
 			
 			_previewBorder.width = _previewArea.width + 12;
 			_previewBorder.height = _previewArea.height + 4;
@@ -208,15 +219,17 @@ package screens.editor
 			_previewBorder.y = _previewArea.y;
 			
 			_framesArea.x = 20;
-			_framesArea.y = _previewBorder.y + _previewBorder.height + 20;
+			_framesArea.y = _previewBorder.y + _previewBorder.height + 40;
 		}
 		
-		private function tryRestorePreview():void 
+		internal function tryRestorePreview(frameId:int = 0):void 
 		{
-			if (!_testLevelData)
+			_previewArea.removeChildren(5);
+			
+			if (!_levelData || !_levelData.blocks[frameId])
 				return;
 			
-			for each (var boostData:Object in _testLevelData.blocks[0].boosts)
+			for each (var boostData:Object in _levelData.blocks[frameId].boosts)
 			{
 				var boost:BaseBoost = GameObjectFactory.getNewByInternalName(boostData.type) as BaseBoost;
 				boost.scale = 0.5;
@@ -225,7 +238,7 @@ package screens.editor
 				boost.y = boostData.y * PREVIEW_SCALE;
 			}
 			
-			for each (var obstacleData:Object in _testLevelData.blocks[0].obstacles)
+			for each (var obstacleData:Object in _levelData.blocks[frameId].obstacles)
 			{
 				var obstacle:BaseObstacle = GameObjectFactory.getNewByInternalName(obstacleData.type) as BaseObstacle;
 				obstacle.scale = 0.5;
@@ -234,11 +247,30 @@ package screens.editor
 				obstacle.y = obstacleData.y * PREVIEW_SCALE;
 			}
 			
-			_testFrame.redraw();
+			_framesArea.redrawCurrentFrame();
 		}
 		
-		private function onPlacementItemClick(item:GameObject):void 
+		private function tryRestoreFrames():void 
 		{
+			if (!_levelData || _levelData.blocks.length <= 1)
+				return;
+			
+			for (var i:int = 1; i < _levelData.blocks.length; i++)
+			{
+				tryRestorePreview(i);
+				_framesArea.addFrame(i);
+			}
+		}
+		
+		private function onPlacementClick(item:GameObject):void 
+		{
+			if (_draggedItem)
+			{
+				removeEventListener(TouchEvent.TOUCH, onDragEvent);
+				removeChild(_draggedItem);
+				_draggedItem = null;
+			}
+			
 			var realClass:Class = Object(item).constructor;
 			_draggedItem = new realClass();
 			_draggedItem.scale = DRAGGED_ITEM_SCALE;
@@ -265,17 +297,10 @@ package screens.editor
 				setDraggedItemPosition(touchPoint);
 				setDraggedItemData();
 				
-				_testFrame.redraw();
+				_framesArea.redrawCurrentFrame();
 				
 				_draggedItem = null;
-			}/*
-			else if (e.getTouch(_toolsArea, TouchPhase.ENDED))
-			{
-				// DISCARD
-				removeEventListener(TouchEvent.TOUCH, onDragEvent);
-				removeChild(_draggedItem);
-				_draggedItem = null;
-			}*/
+			}
 			else
 			{
 				// MOVE
@@ -307,50 +332,63 @@ package screens.editor
 				_draggedItem.x = scaledX * PREVIEW_SCALE;
 			}
 			
-			if (scaledY > GameScreen.FLOOR_Y + _draggedItem.pivotY)
+			if (scaledY > GameScreen.FLOOR_Y)
 			{
-				scaledY = GameScreen.FLOOR_Y + _draggedItem.pivotY;
+				scaledY = GameScreen.FLOOR_Y;
 				_draggedItem.y = scaledY * PREVIEW_SCALE;
+			}
+			else if (scaledY < _draggedItem.height)
+			{
+				scaledY = _draggedItem.height;
+				_draggedItem.y = scaledY * PREVIEW_SCALE;
+			}
+			
+			_draggedItem.y += 19;
+		}
+		
+		internal function ensureDataBlockExists():void
+		{
+			if (!_levelData)
+			{
+				_levelData = new Object();
+				_levelData.name = "EditorTest";
+				_levelData.repeatFrom = 0;
+				_levelData.blocks = [];
+			}
+			
+			if (!_levelData.blocks[_framesArea.currentFrameId])
+			{
+				_levelData.blocks[_framesArea.currentFrameId] = new Object();
+				_levelData.blocks[_framesArea.currentFrameId].type = "editorTest";
+				_levelData.blocks[_framesArea.currentFrameId].obstacles = [];
+				_levelData.blocks[_framesArea.currentFrameId].boosts = [];
 			}
 		}
 		
 		private function setDraggedItemData():void 
 		{
-			if (!_testLevelData)
-			{
-				_testLevelData = new Object();
-				_testLevelData.name = "EditorTest";
-				_testLevelData.repeatFrom = 0;
-				_testLevelData.blocks = [new Object()];
-				_testLevelData.blocks[0].type = "editorTest";
-				_testLevelData.blocks[0].obstacles = [];
-				_testLevelData.blocks[0].boosts = [];
-			}
+			ensureDataBlockExists();
 			
 			var dataItem:Object = new Object();
 			dataItem.type = _draggedItem.internalName;
 			dataItem.x = _draggedItem.x / PREVIEW_SCALE;
-			dataItem.y = _draggedItem.y / PREVIEW_SCALE;
+			dataItem.y = _draggedItem.y / PREVIEW_SCALE
+			
 			if (_draggedItem is IBoost)
 			{
-				_testLevelData.blocks[0].boosts.push(dataItem);
+				_levelData.blocks[_framesArea.currentFrameId].boosts.push(dataItem);
 			}
 			else if (_draggedItem is IObstacle)
 			{
-				_testLevelData.blocks[0].obstacles.push(dataItem);
+				_levelData.blocks[_framesArea.currentFrameId].obstacles.push(dataItem);
 			}
-		}
-		
-		private function onFrameClick(frameId:int):void 
-		{
-			trace("Clicked frame", frameId);
 		}
 		
 		private function onTestLevelClick():void 
 		{
 			deactivate();
 			
-			Game.instance.startGame(_testLevelData);
+			Game.instance.startGame(_levelData);
 		}
 		
 		private function onBackClick():void 
@@ -358,6 +396,40 @@ package screens.editor
 			deactivate();
 			
 			Game.instance.showMainMenu();
+		}
+		
+		private function onNewLevelClick():void 
+		{
+			_framesArea.clear();
+			_levelData = null;
+			
+			_framesArea.addFrame(0);
+			tryRestorePreview();
+		}
+		
+		private function onSaveLevelClick():void 
+		{
+			if (!_levelData)
+				_levelData =  Assets.instance.manager.getObject("emptylevel");
+			BaseRoot.editorDataWorker.save(_levelData);
+		}
+		
+		private function onLoadLevelClick():void 
+		{
+			_framesArea.clear();
+			_framesArea.addFrame(0);
+			_levelData = null;
+			
+			BaseRoot.editorDataWorker.load(onLoadDone);
+			
+			function onLoadDone(data:Object):void
+			{
+				// TODO: check validity?
+				_levelData = data;
+				
+				tryRestorePreview(0);
+				tryRestoreFrames();
+			}
 		}
 		
 		public function deactivate():void 
@@ -368,6 +440,11 @@ package screens.editor
 		static public function get instance():EditorScreen 
 		{
 			return _instance;
+		}
+		
+		internal function get previewArea():PreviewArea 
+		{
+			return _previewArea;
 		}
 	}
 }

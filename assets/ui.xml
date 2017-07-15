@@ -5,11 +5,17 @@
 <SubTexture name='manaBarFilled' x='0' y='269' width='1000' height='83' />
 <SubTexture name='manaBarMask' x='0' y='354' width='1000' height='83' />
 <SubTexture name='logo' x='1002' y='184' width='691' height='807' />
-<SubTexture name='buttonDown' x='0' y='439' width='340' height='142' />
-<SubTexture name='buttonHover' x='0' y='583' width='340' height='142' />
-<SubTexture name='buttonIdle' x='0' y='727' width='340' height='142' />
-<SubTexture name='fromFullscreen' x='342' y='439' width='96' height='96' />
-<SubTexture name='mute' x='0' y='871' width='96' height='96' />
-<SubTexture name='sound' x='342' y='537' width='96' height='96' />
-<SubTexture name='toFullscreen' x='440' y='439' width='96' height='96' />
+<SubTexture name='tabBg' x='0' y='439' width='640' height='192' />
+<SubTexture name='buttonDown' x='0' y='633' width='340' height='142' />
+<SubTexture name='buttonHover' x='0' y='777' width='340' height='142' />
+<SubTexture name='buttonIdle' x='342' y='633' width='340' height='142' />
+<SubTexture name='fromFullscreen' x='642' y='439' width='96' height='96' />
+<SubTexture name='iconLeft' x='342' y='777' width='96' height='96' />
+<SubTexture name='iconPlus' x='740' y='439' width='96' height='96' />
+<SubTexture name='iconRight' x='342' y='875' width='96' height='96' />
+<SubTexture name='mute' x='440' y='777' width='96' height='96' />
+<SubTexture name='sound' x='684' y='537' width='96' height='96' />
+<SubTexture name='toFullscreen' x='838' y='439' width='96' height='96' />
+<SubTexture name='highlight' x='0' y='921' width='64' height='20' />
+<SubTexture name='border' x='538' y='777' width='16' height='192' />
 </TextureAtlas>

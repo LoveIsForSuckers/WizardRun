@@ -37,15 +37,15 @@ package ui.components
 				
 				if (!text || text == "")
 				{
-					width = icon.width + 104;
+					width = icon.width + 2 * skin.sidePadding;
 					icon.x = (width - icon.width) * 0.5;
 				}
 				else
 				{
 					var textRect:Rectangle = textBounds;
-					textBounds = new Rectangle(textRect.x + icon.width - 50, textRect.y, textRect.width, textRect.height);
-					icon.x = 45;
-					width = icon.width + textBounds.width - 50;
+					textBounds = new Rectangle(textRect.x + icon.width - skin.sidePadding, textRect.y, textRect.width, textRect.height);
+					icon.x = skin.sidePadding;
+					width = icon.width + textBounds.width - skin.sidePadding;
 				}
 				
 				icon.y = (height - icon.height) * 0.5;

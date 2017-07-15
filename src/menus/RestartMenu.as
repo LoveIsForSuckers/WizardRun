@@ -1,8 +1,10 @@
 package menus 
 {
+	import assets.Assets;
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Back;
 	import starling.display.Button;
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -46,7 +48,7 @@ package menus
 			_restartBtn.y = _restartText.height;
 			addChild(_restartBtn);
 			
-			_homeBtn = new GameButton(onHomeBtnClick, "В меню");
+			_homeBtn = new GameButton(onHomeBtnClick, "В меню", new Image(Assets.instance.manager.getTexture("iconLeft")));
 			_homeBtn.x = stage.stageWidth + _homeBtn.width;
 			_homeBtn.y = _restartBtn.y + _restartBtn.height + 0.2 * _restartBtn.height;
 			addChild(_homeBtn);

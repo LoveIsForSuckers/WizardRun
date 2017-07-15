@@ -58,7 +58,7 @@ package dynamics.boost
 		{
 			_armature.advanceTime(deltaTime);
 			
-			if (x > GameScreen.MAX_X)
+			if (x > GameScreen.BLOCK_WIDTH)
 				x -= _speed * deltaTime / SPEED_MODIFIER;
 			else
 				x -= _speed * deltaTime;

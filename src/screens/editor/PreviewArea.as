@@ -27,7 +27,7 @@ package screens.editor
 			mask = previewMask;
 		}
 		
-		private function createLevelBackground(levelBgId:int):void 
+		internal function createLevelBackground(levelBgId:int):void 
 		{
 			var cloudString:String = "clouds" + levelBgId.toString();
 			var hillsString:String = "hills" + levelBgId.toString();

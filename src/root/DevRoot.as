@@ -1,11 +1,8 @@
 package root
 {
 	import flash.events.Event;
+	import screens.editor.data.DevEditorDataWorker;
 	
-	/**
-	 * ...
-	 * @author Love is for Suckers
-	 */
 	public class DevRoot extends BaseRoot 
 	{
 		static private const GAME_WIDTH:int = 1000;
@@ -22,6 +19,7 @@ package root
 			super.init(e);
 			
 			_starling.showStatsAt("left", "bottom", GAME_SCALE_INTERNAL);
+			BaseRoot.editorDataWorker = new DevEditorDataWorker();
 		}
 	}
 	

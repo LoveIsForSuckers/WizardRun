@@ -89,11 +89,6 @@ package assets
 		[Embed(source = "../../assets/ui.xml", mimeType = "application/octet-stream")]
 		public static const uiData:Class;
 		
-		[Embed(source = "../../assets/tabBg.png")]
-		public static const tabBg:Class;
-		[Embed(source = "../../assets/border.png")]
-		public static const border:Class;
-		
 		[Embed(source = "../../assets/crate.png")]
 		public static const crate:Class;
 		[Embed(source = "../../assets/boulder.png")]

@@ -21,6 +21,7 @@ package screens.game
 	import starling.events.KeyboardEvent;
 	import starling.filters.BlurFilter;
 	import starling.text.TextField;
+	import ui.components.GameButton;
 	
 
 	public class GameScreen extends Sprite implements IScreen 
@@ -41,6 +42,10 @@ package screens.game
 		static private var _instance:GameScreen;
 		
 		private var _layer:Sprite;
+		
+		private var _gameLayer:Sprite;
+		private var _uiLayer:Sprite;
+		private var _backBtn:GameButton;
 		
 		private var _instructionsTF:TextField;
 		private var _uiProto:Image;
@@ -78,20 +83,28 @@ package screens.game
 			_layer = layer;
 			_layer.addChild(this);
 			
+			if (!_gameLayer || !_uiLayer)
+			{
+				_gameLayer = new Sprite();
+				_uiLayer = new Sprite();
+				addChild(_gameLayer);
+				addChild(_uiLayer);
+			}
+			
 			if (!_uiProto)
 			{
 				_uiProto = new Image(Assets.instance.manager.getTexture("uiProto"));
 				_uiProto.height = stage.stageHeight - GameScreen.FLOOR_Y;
 				_uiProto.width = stage.stageWidth;
 				_uiProto.y = GameScreen.FLOOR_Y + 1;
-				addChild(_uiProto);
+				_uiLayer.addChild(_uiProto);
 			}
 			
 			if (!_instructionsTF)
 			{
 				_instructionsTF = new TextField(stage.stageWidth, 600, "Нажимай стрелки, чтобы маневрировать!");
 				_instructionsTF.format.size = 80;
-				addChild(_instructionsTF);
+				_uiLayer.addChild(_instructionsTF);
 			}
 			
 			if (!_scoreTF)
@@ -101,7 +114,7 @@ package screens.game
 				_scoreTF.y = FLOOR_Y;
 				_scoreTF.format.size = 56;
 				_scoreTF.format.color = 0xFFFFFF;
-				addChild(_scoreTF);
+				_uiLayer.addChild(_scoreTF);
 			}
 			
 			if (!_distanceTF)
@@ -110,9 +123,28 @@ package screens.game
 				_distanceTF.x = stage.stageWidth - _distanceTF.width;
 				_distanceTF.format.size = 56;
 				_distanceTF.format.color = 0xFFFFFF;
-				_distanceTF.y = _scoreTF.y - _distanceTF.height;
-				addChild(_distanceTF);
+				_distanceTF.y = _scoreTF.y + _scoreTF.height + 10;
+				_uiLayer.addChild(_distanceTF);
 			}
+			
+			if (!_backBtn)
+			{
+				_backBtn = new GameButton(onBackClick, "В меню", new Image(Assets.instance.manager.getTexture("iconLeft")));
+				_backBtn.x = 20;
+				_backBtn.y = 20;
+				_uiLayer.addChild(_backBtn);
+			}
+		}
+		
+		private function onBackClick():void 
+		{
+			stage.removeEventListeners(KeyboardEvent.KEY_DOWN);
+			stage.removeEventListeners(KeyboardEvent.KEY_UP);
+			_wiz.removeEventListener("WizardDeath", onGameOver);
+			removeEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+			deactivate();
+			
+			Game.instance.showMainMenu();
 		}
 		
 		public function deactivate():void 
@@ -129,7 +161,7 @@ package screens.game
 			if (!_bg)
 			{
 				_bg = new Background();
-				addChild(_bg);
+				_gameLayer.addChild(_bg);
 			}
 			else
 			{
@@ -140,13 +172,13 @@ package screens.game
 			{
 				_debug = new Quad(8, FLOOR_Y, 0xFF00FF);
 				_debug.alpha = 0.4;
-				addChild(_debug);
+				_gameLayer.addChild(_debug);
 			}
 			
 			if (!_magic)
 			{
 				_magic = new Magic(this)
-				addChild(_magic);
+				_uiLayer.addChild(_magic);
 				
 				_magic.y = FLOOR_Y + 15;
 				_magic.x = (stage.stageWidth - _magic.width) * 0.5;
@@ -159,7 +191,7 @@ package screens.game
 			if (!_lives)
 			{
 				_lives = new Lives();
-				addChild(_lives);
+				_uiLayer.addChild(_lives);
 				
 				_lives.x = 15;
 				_lives.y = FLOOR_Y + 15;
@@ -178,7 +210,7 @@ package screens.game
 			{
 				for (i = _obstacles.length - 1; i >= 0; i--)
 				{
-					removeChild(_obstacles[i]);
+					_gameLayer.removeChild(_obstacles[i]);
 					_obstacles.removeAt(i);
 				}
 			}
@@ -187,14 +219,14 @@ package screens.game
 			{
 				for (i = _boosts.length - 1; i >= 0; i--)
 				{
-					removeChild(_boosts[i]);
+					_gameLayer.removeChild(_boosts[i]);
 					_boosts.removeAt(i);
 				}
 			}
 			
 			if (_portal)
 			{
-				removeChild(_portal);
+				_gameLayer.removeChild(_portal);
 				_portal = null;
 			}
 			
@@ -204,7 +236,7 @@ package screens.game
 			if (!_wiz)
 			{
 				_wiz = new dynamics.Wizard(_gameSpeed);
-				addChild(_wiz);
+				_gameLayer.addChild(_wiz);
 			}
 			else
 			{
@@ -290,7 +322,7 @@ package screens.game
 				obstacle.update(deltaTime);
 				if (obstacle.x < -obstacle.width)
 				{
-					removeChild(obstacle);
+					_gameLayer.removeChild(obstacle);
 					_obstacles.removeAt(i);
 				}
 			}
@@ -302,7 +334,7 @@ package screens.game
 				boost.update(deltaTime);
 				if (boost.x < -boost.width)
 				{
-					removeChild(boost);
+					_gameLayer.removeChild(boost);
 					_boosts.removeAt(i);
 				}
 			}
@@ -313,7 +345,7 @@ package screens.game
 				
 				if (_portal.x < -_portal.x)
 				{
-					removeChild(_portal);
+					_gameLayer.removeChild(_portal);
 					_portal = null;
 				}
 			}
@@ -322,13 +354,13 @@ package screens.game
 		public function addBoost(boost:BaseBoost):void 
 		{
 			_boosts.push(boost);
-			addChild(boost);
+			_gameLayer.addChild(boost);
 		}
 		
 		public function addObstacle(obstacle:BaseObstacle):void 
 		{
 			_obstacles.push(obstacle);
-			addChild(obstacle);
+			_gameLayer.addChild(obstacle);
 		}
 		
 		public function trySpawnPortal():void
@@ -346,7 +378,7 @@ package screens.game
 			
 			_portal = new Portal();
 			_portal.init(_gameSpeed, BLOCK_WIDTH, 800);
-			addChild(_portal);
+			_gameLayer.addChild(_portal);
 		}
 		
 		private function testWizardHits():void 
@@ -358,14 +390,14 @@ package screens.game
 				if (boost && boost.bounds.intersects(_wiz.collider.getBounds(this)))
 				{
 					boost.onPickUp();
-					removeChild(boost);
+					_gameLayer.removeChild(boost);
 					_boosts.removeAt(i);
 				}
 			}
 			
 			if (_portal && _portal.bounds.intersects(_wiz.collider.getBounds(this)))
 			{
-				removeChild(_portal);
+				_gameLayer.removeChild(_portal);
 				_portal = null;
 				
 				Game.instance.playSound("teleport");

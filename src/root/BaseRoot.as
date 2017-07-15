@@ -2,20 +2,21 @@ package root
 {
 	import com.greensock.TweenLite;
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
 	import flash.events.Event;
-	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import screens.editor.data.IEditorDataWorker;
 	import starling.core.Starling;
 	import starling.events.ResizeEvent;
 	
 	/**
 	 * ...
-	 * @author Love is for Suckers (aka dartyushin/Dmitriy Artyushin/MiteXXX)
+	 * @author Love is for Suckers (aka dartyushin / Dmitriy Artyushin / MiteXXX)
 	 */
 	public class BaseRoot extends Sprite 
 	{
+		static public var editorDataWorker:IEditorDataWorker;
+		
 		protected var _starling:Starling;
 		
 		private var _gameWidth:int;
@@ -27,9 +28,6 @@ package root
 			_gameWidth = gameWidth;
 			_gameHeight = gameHeight;
 			_gameInternalScale = gameInternalScale;
-			
-			if (stage) init();
-			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
 		protected function init(e:Event = null):void 

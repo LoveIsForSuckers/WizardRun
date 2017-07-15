@@ -10,7 +10,8 @@ package ui.components
 				Assets.instance.manager.getTexture("buttonIdle"),
 				Assets.instance.manager.getTexture("buttonDown"),
 				Assets.instance.manager.getTexture("buttonHover"),
-				new Rectangle(100, 0, 140, 142)
+				new Rectangle(100, 0, 140, 142),
+				52
 				);
 				
 		static public const SKIN_EMPTY:GameButtonSkin = new GameButtonSkin(
@@ -21,13 +22,16 @@ package ui.components
 		private var _downState:Texture;
 		private var _overState:Texture;
 		private var _scale9Grid:Rectangle;
+		private var _sidePadding:int;
 		
-		public function GameButtonSkin(upState:Texture, downState:Texture = null, overState:Texture = null, scale9Grid:Rectangle = null) 
+		public function GameButtonSkin(upState:Texture, downState:Texture = null, overState:Texture = null, scale9Grid:Rectangle = null,
+				sidePadding:int = 0) 
 		{
 			_upState = upState;
 			_downState = downState;
 			_overState = overState;
 			_scale9Grid = scale9Grid;
+			_sidePadding = sidePadding;
 		}
 		
 		public function get upState():Texture 
@@ -48,6 +52,11 @@ package ui.components
 		public function get scale9Grid():Rectangle 
 		{
 			return _scale9Grid;
+		}
+		
+		public function get sidePadding():int 
+		{
+			return _sidePadding;
 		}
 	}
 }

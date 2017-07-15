@@ -1,8 +1,10 @@
 package menus 
 {
+	import assets.Assets;
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Back;
 	import starling.display.Button;
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -42,7 +44,7 @@ package menus
 			TweenLite.to(_successText, 0.4, { y: 0, onComplete: tweenChildren } );
 			addChild(_successText);
 			
-			_homeBtn = new GameButton(onBtnClick, "В меню");
+			_homeBtn = new GameButton(onBtnClick, "В меню", new Image(Assets.instance.manager.getTexture("iconLeft")));
 			_homeBtn.x = -_homeBtn.width;
 			_homeBtn.y = 1.2 * _successText.height;
 			addChild(_homeBtn);

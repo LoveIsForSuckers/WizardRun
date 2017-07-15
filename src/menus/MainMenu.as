@@ -88,7 +88,7 @@ package menus
 			var infoString:String = "Wizard Run отображается с помощью: " + Starling.current.context.driverInfo + "\n" +
 					"Музыка: Kevin MacLeod - Dubakupado  (incompetech.com) (CC BY 3.0)\n" +
 					"Иконки: Silviu Runceanu, Dave Gandy (flaticon.com) (CC BY 3.0)";
-			_infoText = new TextField(stage.stageWidth * 0.6, 192, infoString);
+			_infoText = new TextField(stage.stageWidth * 0.6, 160, infoString);
 			_infoText.format.font = "f_default";
 			_infoText.format.bold = true;
 			_infoText.format.size = 28;

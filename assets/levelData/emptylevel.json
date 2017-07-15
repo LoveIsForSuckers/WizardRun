@@ -1,0 +1,13 @@
+{
+  "name": "Empty level",
+  "repeatFrom": 0,
+  "blocks": [
+    {
+      "type" : "empty",
+      "obstacles" : [
+      ],
+	  "boosts" : [
+	  ]
+    }
+  ]
+}

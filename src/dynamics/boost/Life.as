@@ -28,7 +28,7 @@ package dynamics.boost
 		override public function init(speed:int, startX:int, startY:int):void 
 		{
 			super.init(speed, startX, startY);
-			speed *= SPEED_MODIFIER;
+			_speed *= SPEED_MODIFIER;
 		}
 		
 		override protected function activate(e:Event):void 
@@ -59,7 +59,7 @@ package dynamics.boost
 		{
 			_armature.advanceTime(deltaTime);
 			
-			if (x > GameScreen.MAX_X)
+			if (x > GameScreen.BLOCK_WIDTH)
 				x -= _speed * deltaTime / SPEED_MODIFIER;
 			else
 				x -= _speed * deltaTime;
