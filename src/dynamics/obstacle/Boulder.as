@@ -2,25 +2,31 @@ package dynamics.obstacle
 {
 	import assets.Assets;
 	import dynamics.GameObjectFactory;
+	import dynamics.IPoolable;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.events.Event;
 	
 
-	public class Boulder extends BaseObstacle
+	public class Boulder extends BaseObstacle implements IPoolable
 	{
+		static private const POOL:Vector.<Boulder> = new Vector.<Boulder>();
+		
 		private var _image:Image;
 		private var _speedY:int = 0;
+		
+		static public function getNew():Boulder 
+		{
+			if (POOL.length <= 0)
+				return new Boulder();
+			else
+				return POOL.pop();
+		}
 		
 		public function Boulder() 
 		{
 			super();
-		}
-		
-		override protected function activate(e:Event):void 
-		{
-			super.activate(e);
 			
 			_image = new Image(Assets.instance.manager.getTexture("boulder"));
 			_image.y = -_image.height - 14;
@@ -39,6 +45,18 @@ package dynamics.obstacle
 		override public function onImpact():void 
 		{
 			Game.instance.playSound("stoneImpact");
+		}
+		
+		override public function toPool():void 
+		{
+			x = 0;
+			y = 0;
+			_speed = 0;
+			_speedY = 0;
+			_startX = 0;
+			_startY = 0;
+			
+			POOL.push(this);
 		}
 		
 		private function moveY(deltaTime:Number):void

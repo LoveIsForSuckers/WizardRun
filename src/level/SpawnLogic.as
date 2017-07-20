@@ -40,7 +40,7 @@ package level
 			else if (_repeatFrom > -1)
 				blockToSpawn = _repeatFrom + (_currentBlock % (_level.length - _repeatFrom));
 			
-			//trace("[SpawnLogic] block:", _level[blockToSpawn].type, blockToSpawn, "/", (_level.length - 1));
+			trace("[SpawnLogic] block:", _level[blockToSpawn].type, blockToSpawn, "/", (_level.length - 1));
 			
 			_level[blockToSpawn].spawn(gameSpeed);
 			_currentBlock ++;

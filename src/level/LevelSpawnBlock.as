@@ -32,7 +32,10 @@ package level
 			{
 				var obstacle:BaseObstacle = GameObjectFactory.getNewByInternalName(data.type) as BaseObstacle;
 				if (!obstacle)
+				{
+					trace("[LevelSpawnBlock] Failed to aquire new", data.type);
 					continue;
+				}
 				obstacle.init(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y);
 				GameScreen.instance.addObstacle(obstacle);
 			}
@@ -41,7 +44,10 @@ package level
 			{
 				var boost:BaseBoost = GameObjectFactory.getNewByInternalName(data.type) as BaseBoost;
 				if (!boost)
+				{
+					trace("[LevelSpawnBlock] Failed to aquire new", data.type);
 					continue;
+				}
 				boost.init(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y);
 				GameScreen.instance.addBoost(boost);
 			}

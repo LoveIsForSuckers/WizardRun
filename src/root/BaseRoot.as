@@ -28,6 +28,8 @@ package root
 			_gameWidth = gameWidth;
 			_gameHeight = gameHeight;
 			_gameInternalScale = gameInternalScale;
+			
+			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
 		protected function init(e:Event = null):void 

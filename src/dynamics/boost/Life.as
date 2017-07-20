@@ -6,53 +6,46 @@ package dynamics.boost
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
 	import dynamics.GameObjectFactory;
+	import dynamics.IPoolable;
 	import dynamics.boost.BaseBoost;
 	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.events.Event;
 	
 
-	public class Life extends BaseBoost
+	public class Life extends BaseBoost implements IPoolable
 	{
+		static private const POOL:Vector.<Life> = new Vector.<Life>();
+		
 		static private const SPEED_MODIFIER:Number = 0.2;
 		static private const ANIMATION_IDLE:String = "idle";
 		
 		private var _armature:Armature;
 		private var _display:StarlingArmatureDisplay;
 		
+		static public function getNew():Life 
+		{
+			if (POOL.length <= 0)
+				return new Life();
+			else
+				return POOL.pop();
+		}
+		
 		public function Life() 
 		{
 			super();
+			
+			_armature = GameObjectFactory.gfxFactory.buildArmature("Life");
+			_display = _armature.display as StarlingArmatureDisplay;
+			addChild(_display);
 		}
 		
 		override public function init(speed:int, startX:int, startY:int):void 
 		{
 			super.init(speed, startX, startY);
 			_speed *= SPEED_MODIFIER;
-		}
-		
-		override protected function activate(e:Event):void 
-		{
-			super.activate(e);
 			
-			var factory:StarlingFactory = new StarlingFactory();
-			var dbData:DragonBonesData = factory.parseDragonBonesData(Assets.instance.manager.getObject("Life_ske"));
-			factory.parseTextureAtlasData(Assets.instance.manager.getObject("Life_tex_json"),
-						Assets.instance.manager.getTexture("Life_tex"));
-			
-			if (dbData)
-			{
-				_armature = factory.buildArmature("Life");
-				
-				if (_armature)
-				{					
-					_armature.animation.play(ANIMATION_IDLE);
-					
-					_display = _armature.display as StarlingArmatureDisplay;
-					
-					addChild(_display);
-				}
-			}
+			_armature.animation.play(ANIMATION_IDLE);
 		}
 		
 		override public function update(deltaTime:Number):void
@@ -71,6 +64,21 @@ package dynamics.boost
 		{
 			Game.instance.playSound("powerup");
 			GameScreen.instance.lives.increase();
+		}
+		
+		/* INTERFACE dynamics.IPoolable */
+		
+		override public function toPool():void 
+		{
+			_armature.animation.gotoAndStopByProgress(ANIMATION_IDLE);
+			
+			x = 0;
+			y = 0;
+			_speed = 0;
+			_startX = 0;
+			_startY = 0;
+			
+			POOL.push(this);
 		}
 		
 		override public function get preview():Image 

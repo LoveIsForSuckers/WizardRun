@@ -35,7 +35,7 @@ package screens.editor
 		private var _bg:Quad;
 		
 		private var _previewBorder:Image;
-		private var _controlsArea:Sprite;
+		private var _controlsArea:ControlsArea;
 		private var _previewArea:PreviewArea;
 		private var _framesArea:FramesArea;
 		private var _toolsArea:Sprite;
@@ -43,12 +43,6 @@ package screens.editor
 		private var _lvlBgId:int;
 		private var _draggedItem:GameObject;
 		private var _levelData:Object;
-		
-		private var _testLevelButton:GameButton;
-		private var _backButton:GameButton;
-		private var _clearButton:GameButton;
-		private var _saveButton:GameButton;
-		private var _loadButton:GameButton;
 		
 		public function EditorScreen() 
 		{
@@ -78,79 +72,14 @@ package screens.editor
 			tryRestorePreview(0);
 		}
 		
+		private function buildControlsArea():void 
+		{
+			_controlsArea = new ControlsArea(onBackClick, onNewLevelClick, onSaveLevelClick, onLoadLevelClick, onTestLevelClick);
+		}
+		
 		private function buildToolsArea():void 
 		{
-			_toolsArea = new Sprite();
-			var itemsInRow:int = 0;
-			var itemX:int = 0;
-			var itemY:int = 0;
-			var child:Image;
-			var type:Class;
-			var button:GameButton;
-			
-			var obstacleContent:Sprite = new Sprite();
-			for each (type in GameObjectFactory.obstacleTypes)
-			{
-				var obst:BaseObstacle = new type();
-				child = obst.preview;
-				button = new GameButton(onPlacementClick, "", child, [obst]);
-				obstacleContent.addChild(button);
-				button.scale = 0.8;
-				button.x = itemX;
-				button.y = itemY;
-				button.height += 15;
-				
-				itemsInRow ++;
-				if (itemsInRow < 3)
-				{
-					itemX += button.width + 20;
-				}
-				else
-				{
-					itemX = 0;
-					itemY += button.height + 20;
-				}
-			}
-			var obstacleArea:TabArea = new TabArea("Препятствия", obstacleContent);
-			_toolsArea.addChild(obstacleArea);
-			
-			itemX = 0;
-			itemY = 0;
-			itemsInRow = 0;
-			var boostContent:Sprite = new Sprite();
-			for each (type in GameObjectFactory.boostTypes)
-			{
-				var boost:BaseBoost = new type();
-				child = boost.preview
-				button = new GameButton(onPlacementClick, "", child, [boost]);
-				button.scale = 0.8;
-				boostContent.addChild(button);
-				button.x = itemX;
-				button.height += 15;
-				
-				itemsInRow ++;
-				if (itemsInRow < 3)
-				{
-					itemX += button.width + 20;
-				}
-				else
-				{
-					itemX = 0;
-					itemY += button.height + 20;
-				}
-			}
-			var boostArea:TabArea = new TabArea("Бусты", boostContent);
-			_toolsArea.addChild(boostArea);
-			
-			boostArea.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
-			function onAddedToStage(e:Event):void 
-			{
-				removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-				
-				obstacleArea.y = 20;
-				boostArea.y = obstacleArea.height + obstacleArea.y + 20;
-			}
+			_toolsArea = new ToolsArea(onPlacementClick);
 		}
 		
 		private function buildPreviewArea():void 
@@ -167,30 +96,6 @@ package screens.editor
 		private function buildFramesArea():void 
 		{
 			_framesArea = new FramesArea();
-		}
-		
-		private function buildControlsArea():void 
-		{
-			_controlsArea = new Sprite();
-			
-			_backButton = new GameButton(onBackClick, "В меню", new Image(Assets.instance.manager.getTexture("iconLeft")));
-			_controlsArea.addChild(_backButton);
-			
-			_clearButton = new GameButton(onNewLevelClick, "Новый");
-			_clearButton.x = _backButton.x + _backButton.width + 10;
-			_controlsArea.addChild(_clearButton);
-			
-			_saveButton = new GameButton(onSaveLevelClick, "Сохранить");
-			_saveButton.x = _clearButton.x + _clearButton.width + 20;
-			_controlsArea.addChild(_saveButton);
-			
-			_loadButton = new GameButton(onLoadLevelClick, "Загрузить");
-			_loadButton.x = _saveButton.x + _saveButton.width + 20;
-			_controlsArea.addChild(_loadButton);
-			
-			_testLevelButton = new GameButton(onTestLevelClick, "Тест", new Image(Assets.instance.manager.getTexture("iconRight")))
-			_testLevelButton.x = stage.stageWidth - _testLevelButton.width - 40;
-			_controlsArea.addChild(_testLevelButton);
 		}
 		
 		private function layout():void 

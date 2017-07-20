@@ -36,8 +36,8 @@ package ui.components
 			_renderView = new Image(_texture);
 			redraw();
 			
-			addChild(_renderView);
 			addChild(_border);
+			addChild(_renderView);
 			
 			Starling.current.addEventListener(Event.CONTEXT3D_CREATE, redraw);
 		}

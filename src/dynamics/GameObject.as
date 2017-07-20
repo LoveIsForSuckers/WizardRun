@@ -14,7 +14,6 @@ package dynamics
 		
 		public function GameObject()
 		{
-			addEventListener(Event.ADDED_TO_STAGE, activate);
 		}
 		
 		public function init(speed:int, startX:int, startY:int):void 
@@ -22,12 +21,6 @@ package dynamics
 			_speed = speed;
 			_startX = startX;
 			_startY = startY;
-		}
-		
-		protected function activate(e:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, activate);
-			
 			x = _startX;
 			y = _startY;
 		}

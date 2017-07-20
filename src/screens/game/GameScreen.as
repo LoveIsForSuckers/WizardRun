@@ -211,6 +211,7 @@ package screens.game
 				for (i = _obstacles.length - 1; i >= 0; i--)
 				{
 					_gameLayer.removeChild(_obstacles[i]);
+					_obstacles[i].toPool();
 					_obstacles.removeAt(i);
 				}
 			}
@@ -220,6 +221,7 @@ package screens.game
 				for (i = _boosts.length - 1; i >= 0; i--)
 				{
 					_gameLayer.removeChild(_boosts[i]);
+					_boosts[i].toPool();
 					_boosts.removeAt(i);
 				}
 			}
@@ -227,6 +229,7 @@ package screens.game
 			if (_portal)
 			{
 				_gameLayer.removeChild(_portal);
+				_portal.toPool();
 				_portal = null;
 			}
 			
@@ -324,6 +327,7 @@ package screens.game
 				{
 					_gameLayer.removeChild(obstacle);
 					_obstacles.removeAt(i);
+					obstacle.toPool();
 				}
 			}
 			
@@ -336,6 +340,7 @@ package screens.game
 				{
 					_gameLayer.removeChild(boost);
 					_boosts.removeAt(i);
+					boost.toPool();
 				}
 			}
 			
@@ -346,6 +351,7 @@ package screens.game
 				if (_portal.x < -_portal.x)
 				{
 					_gameLayer.removeChild(_portal);
+					_portal.toPool();
 					_portal = null;
 				}
 			}
@@ -392,12 +398,14 @@ package screens.game
 					boost.onPickUp();
 					_gameLayer.removeChild(boost);
 					_boosts.removeAt(i);
+					boost.toPool();
 				}
 			}
 			
 			if (_portal && _portal.bounds.intersects(_wiz.collider.getBounds(this)))
 			{
 				_gameLayer.removeChild(_portal);
+				_portal.toPool();
 				_portal = null;
 				
 				Game.instance.playSound("teleport");
