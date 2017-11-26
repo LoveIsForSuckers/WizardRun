@@ -7,6 +7,7 @@ package screens.editor
 	import dynamics.boost.IBoost;
 	import dynamics.obstacle.BaseObstacle;
 	import dynamics.obstacle.IObstacle;
+	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import root.BaseRoot;
@@ -18,9 +19,11 @@ package screens.editor
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import ui.components.input.InputField;
 
 	public class EditorScreen extends Sprite implements IScreen 
 	{
+		static private const NEW_LEVEL_NAME:String = "New level";
 		static private const PREVIEW_SCALE:Number = 0.5;
 		static private const DRAGGED_ITEM_SCALE:Number = 0.25;
 		
@@ -35,6 +38,7 @@ package screens.editor
 		private var _previewArea:PreviewArea;
 		private var _framesArea:FramesArea;
 		private var _toolsArea:Sprite;
+		private var _nameInput:InputField;
 		
 		private var _lvlBgId:int;
 		private var _draggedItem:GameObject;
@@ -61,6 +65,8 @@ package screens.editor
 			
 			if (!_controlsArea)
 				buildControlsArea();
+			if (!_nameInput)
+				buildNameInput();
 			if (!_toolsArea)
 				buildToolsArea();
 			if (!_previewArea)
@@ -84,6 +90,13 @@ package screens.editor
 			_toolsArea = new ToolsArea(onPlacementClick);
 		}
 		
+		private function buildNameInput():void 
+		{
+			var name:String = (_levelData && _levelData.name) ? _levelData.name : NEW_LEVEL_NAME;
+			_nameInput = new InputField(name, onNameChange, 40);
+			_nameInput.width = 1250;
+		}
+		
 		private function buildPreviewArea():void 
 		{
 			_lvlBgId = 2;
@@ -100,9 +113,15 @@ package screens.editor
 			_framesArea = new FramesArea();
 		}
 		
+		private function onNameChange(text:String):void 
+		{
+			_levelData.name = text;
+		}
+		
 		private function layout():void 
 		{
 			addChild(_controlsArea);
+			addChild(_nameInput);
 			addChild(_previewArea);
 			addChild(_previewBorder);
 			addChild(_framesArea);
@@ -111,11 +130,14 @@ package screens.editor
 			_controlsArea.x = 20;
 			_controlsArea.y = 20;
 			
+			_nameInput.x = 20;
+			_nameInput.y = _controlsArea.y + _controlsArea.height + 40;
+			
 			_toolsArea.x = stage.stageWidth - _toolsArea.width - 20;
-			_toolsArea.y = _controlsArea.y + _controlsArea.height + 20;
+			_toolsArea.y = _nameInput.y + _nameInput.height + 20;
 			
 			_previewArea.x = 26;
-			_previewArea.y = _controlsArea.y + _controlsArea.height + 40;
+			_previewArea.y = _nameInput.y + _nameInput.height + 40;
 			_previewArea.width = BaseRoot.gameWidth - _toolsArea.width - 70;
 			_previewArea.scaleY = _previewArea.scaleX;
 			
@@ -260,7 +282,7 @@ package screens.editor
 			if (!_levelData)
 			{
 				_levelData = new Object();
-				_levelData.name = "EditorTest";
+				_levelData.name = NEW_LEVEL_NAME;
 				_levelData.repeatFrom = 0;
 				_levelData.blocks = [];
 			}
@@ -312,9 +334,10 @@ package screens.editor
 			_framesArea.clear();
 			_levelData = null;
 			
-			_framesArea.restorePlusButton();
-			_framesArea.addFrame(0);
-			tryRestorePreview();
+			ensureDataBlockExists();
+			tryRestorePreview(0);
+			tryRestoreFrames();
+			_framesArea.activateHighlights();
 		}
 		
 		private function onSaveLevelClick():void 
@@ -335,6 +358,8 @@ package screens.editor
 				{
 					_framesArea.clear();
 					_levelData = data;
+					
+					_nameInput.text = _levelData.name;
 					
 					tryRestorePreview(0);
 					tryRestoreFrames();
