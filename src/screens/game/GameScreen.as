@@ -149,6 +149,9 @@ package screens.game
 		
 		public function deactivate():void 
 		{
+			if (Game.instance.music)
+				Game.instance.music.stop();
+			
 			_layer.removeChild(this);
 		}
 		

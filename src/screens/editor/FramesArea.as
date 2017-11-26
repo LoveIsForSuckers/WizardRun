@@ -2,6 +2,7 @@ package screens.editor
 {
 	import assets.Assets;
 	import flash.geom.Rectangle;
+	import root.BaseRoot;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import ui.components.FrameView;
@@ -23,6 +24,7 @@ package screens.editor
 		private var _highlightBottom:Image;
 		private var _highlightTop:Image;
 		
+		private var _scrollFrameId:int;
 		private var _currentFrameId:int;
 		
 		public function FramesArea() 
@@ -31,6 +33,7 @@ package screens.editor
 			
 			_frames = new Vector.<FrameView>();
 			_frameButtons = new Vector.<GameButton>();
+			_scrollFrameId = 0;
 			_currentFrameId = 0;
 			
 			_highlightBottom = new Image(Assets.instance.manager.getTexture("highlight"));
@@ -43,18 +46,9 @@ package screens.editor
 			_highlightTop.color = 0x443399;
 			_highlightTop.alpha = 0.7;
 			
-			buildFrames();
 			buildHelperButtons();
 			buildScrollArea();
 			layout();
-		}
-		
-		private function buildFrames():void 
-		{
-			var firstFrame:FrameView = new FrameView(EditorScreen.instance.previewArea);
-			_frames.push(firstFrame);
-			var frameBtn:GameButton = new GameButton(onFrameClick, "", firstFrame, [_currentFrameId], GameButtonSkin.SKIN_EMPTY);
-			_frameButtons.push(frameBtn);
 		}
 		
 		private function buildHelperButtons():void 
@@ -66,7 +60,7 @@ package screens.editor
 			_rightButton.scale = 0.8;
 			_newButton.scale = 0.8;
 			
-			_rightButton.x = Game.instance.width - _rightButton.width - 30;
+			_rightButton.x = BaseRoot.gameWidth - _rightButton.width - 30;
 			addChild(_leftButton);
 			addChild(_rightButton);
 		}
@@ -74,16 +68,20 @@ package screens.editor
 		private function buildScrollArea():void 
 		{
 			_scrollArea = new ScrollArea(_rightButton.x - _rightButton.width - 50, 240);
-			_scrollArea.addContent(_highlightTop);
-			_scrollArea.addContent(_highlightBottom);
 			addChild(_scrollArea);
 			
-			_scrollArea.addContent(_newButton);
+			restorePlusButton();
 			
 			for each (var btn:GameButton in _frameButtons)
 			{
 				_scrollArea.addContent(btn);
 			}
+		}
+		
+		public function activateHighlights():void 
+		{
+			_scrollArea.addContent(_highlightTop);
+			_scrollArea.addContent(_highlightBottom);
 		}
 		
 		private function layout():void 
@@ -106,6 +104,20 @@ package screens.editor
 			_newButton.y = _leftButton.y;
 			itemX += _newButton.width + 20;
 			
+			if (_frames.length > 0)
+			{
+				_highlightBottom.visible = _highlightTop.visible = true;
+				
+				layoutHighlights();
+			}
+			else
+			{
+				_highlightBottom.visible = _highlightTop.visible = false;
+			}
+		}
+		
+		private function layoutHighlights():void 
+		{
 			_highlightBottom.width = _frames[0].width;
 			_highlightBottom.x = _frameButtons[_currentFrameId].x;
 			_highlightBottom.y = _frameButtons[0].y + _frameButtons[0].height - 2;
@@ -118,12 +130,20 @@ package screens.editor
 		
 		private function onLeftBtnCLick():void 
 		{
-			_scrollArea.scrollTo(_scrollArea.position - _frameButtons[0].width - 20);
+			if (_scrollFrameId > 0)
+			{
+				_scrollFrameId --;
+				_scrollArea.scrollTo(_scrollArea.position - _frameButtons[0].width - 20);
+			}
 		}
 		
 		private function onRightBtnClick():void 
 		{
-			_scrollArea.scrollTo(_scrollArea.position + _frameButtons[0].width + 20);
+			if (_scrollFrameId < _frames.length)
+			{
+				_scrollFrameId ++;
+				_scrollArea.scrollTo(_scrollArea.position + _frameButtons[0].width + 20);
+			}
 		}
 		
 		private function onNewBtnClick():void 
@@ -136,7 +156,7 @@ package screens.editor
 		{
 			EditorScreen.instance.tryRestorePreview(id);
 			
-			var newFrame:FrameView = new FrameView(EditorScreen.instance.previewArea);
+			var newFrame:FrameView = new FrameView(EditorScreen.instance.previewArea, id);
 			_frames.push(newFrame);
 			var newFrameBtn:GameButton = new GameButton(onFrameClick, "", newFrame, [id], GameButtonSkin.SKIN_EMPTY);
 			_frameButtons.push(newFrameBtn);
@@ -144,12 +164,13 @@ package screens.editor
 			
 			layout();
 			
-			onFrameClick(id);
+			updateCurrentFrame(id);
 			
 			EditorScreen.instance.ensureDataBlockExists();
 			
 			if (id > 3)
 			{
+				_scrollFrameId ++;
 				_scrollArea.scrollTo(_scrollArea.position + _frameButtons[id].width + 20);
 			}
 		}
@@ -172,19 +193,36 @@ package screens.editor
 			_frameButtons.length = 0;
 			
 			_currentFrameId = 0;
+			
+			_scrollArea.clear();
 		}
 		
-		public function redrawCurrentFrame():void 
+		public function tryRedrawCurrentFrame():void 
 		{
-			_frames[_currentFrameId].redraw();
+			if (_frames.length == 0)
+				return;
+			var frame:FrameView = _frames[_currentFrameId];
+			if (!frame)
+				return;
+			
+			frame.redraw();
+		}
+		
+		public function restorePlusButton():void 
+		{
+			_scrollArea.addContent(_newButton);
 		}
 		
 		private function onFrameClick(frameId:int):void 
 		{
-			_currentFrameId = frameId;
-			_highlightTop.x = _frameButtons[_currentFrameId].x;
-			_highlightBottom.x = _frameButtons[_currentFrameId].x;
+			updateCurrentFrame(frameId);
 			EditorScreen.instance.tryRestorePreview(_currentFrameId);
+		}
+		
+		private function updateCurrentFrame(frameId:int):void 
+		{
+			_currentFrameId = frameId;
+			layoutHighlights();
 			_scrollArea.updateChildrenVisibility();
 		}
 		

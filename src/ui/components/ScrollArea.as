@@ -49,9 +49,6 @@ package ui.components
 		
 		public function scrollTo(position:int):void
 		{
-			if (position < 0)
-				return;
-			
 			touchable = false;
 			TweenLite.to(_content, TWEEN_DURATION, { x: -position, onComplete: onTweenDone } );
 			
@@ -74,6 +71,7 @@ package ui.components
 		
 		public function clear():void
 		{
+			_content.removeChildren();
 			_contentChildren.length = 0;
 		}
 		

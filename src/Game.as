@@ -144,6 +144,7 @@ package
 		
 		public function onGameOver():void 
 		{
+			_music.stop();
 			GameScreen.instance.deactivate();
 			
 			_restartMenu = new RestartMenu();

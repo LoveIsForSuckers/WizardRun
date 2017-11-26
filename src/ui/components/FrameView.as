@@ -8,6 +8,8 @@ package ui.components
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
+	import starling.text.TextFormat;
 	import starling.textures.RenderTexture;
 	import ui.IMeasurable;
 	
@@ -16,14 +18,18 @@ package ui.components
 	{
 		private var _border:Image;
 		private var _renderView:Image;
+		private var _frameIdTF:TextField;
 		
 		private var _texture:RenderTexture
 		private var _renderSource:DisplayObject;
 		
-		public function FrameView(renderSource:DisplayObject) 
+		private var _frameId:int;
+		
+		public function FrameView(renderSource:DisplayObject, id:int) 
 		{
 			super();
 			
+			_frameId = id;
 			_renderSource = renderSource;
 			
 			var ratio:Number = _renderSource.width / _renderSource.height;
@@ -34,10 +40,17 @@ package ui.components
 			_texture = new RenderTexture(_border.width, _border.height, false);
 			_texture.clear(0, 1);
 			_renderView = new Image(_texture);
-			redraw();
+			
+			// TODO: counter bitmap font
+			_frameIdTF = new TextField(32, 32, _frameId.toString(), new TextFormat("mini", 24, 0xFFFFFF));
+			_frameIdTF.x = _border.width - 32 - 4;
+			_frameIdTF.y = 4;
 			
 			addChild(_border);
 			addChild(_renderView);
+			addChild(_frameIdTF);
+			
+			redraw();
 			
 			Starling.current.addEventListener(Event.CONTEXT3D_CREATE, redraw);
 		}
@@ -72,6 +85,7 @@ package ui.components
 			_renderView.dispose();
 			_texture.dispose();
 			_border.dispose();
+			_frameIdTF.dispose();
 		}
 	}
 }

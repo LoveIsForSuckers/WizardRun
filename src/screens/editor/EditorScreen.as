@@ -9,19 +9,15 @@ package screens.editor
 	import dynamics.obstacle.IObstacle;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.net.FileReference;
 	import root.BaseRoot;
 	import screens.IScreen;
 	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
-	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import ui.components.GameButton;
-	import ui.components.TabArea;
 
 	public class EditorScreen extends Sprite implements IScreen 
 	{
@@ -42,7 +38,7 @@ package screens.editor
 		
 		private var _lvlBgId:int;
 		private var _draggedItem:GameObject;
-		private var _levelData:Object;
+		private var _levelData:Object; // TODO: strong-typed implementation?
 		
 		public function EditorScreen() 
 		{
@@ -59,17 +55,23 @@ package screens.editor
 			_layer = layer;
 			_layer.addChild(this);
 			
-			_bg = new Quad(stage.stageWidth, stage.stageHeight, 0x443399);
+			if (!_bg)
+				_bg = new Quad(stage.stageWidth, stage.stageHeight, 0x443399);
 			addChild(_bg);
 			
-			buildControlsArea();
-			buildToolsArea();
-			buildPreviewArea();
-			buildFramesArea();
-			layout();
+			if (!_controlsArea)
+				buildControlsArea();
+			if (!_toolsArea)
+				buildToolsArea();
+			if (!_previewArea)
+				buildPreviewArea();
+			if (!_framesArea)
+				buildFramesArea();
 			
 			tryRestoreFrames();
-			tryRestorePreview(0);
+			_framesArea.activateHighlights();
+			
+			layout();
 		}
 		
 		private function buildControlsArea():void 
@@ -114,9 +116,8 @@ package screens.editor
 			
 			_previewArea.x = 26;
 			_previewArea.y = _controlsArea.y + _controlsArea.height + 40;
-			_previewArea.width = stage.stageWidth - _toolsArea.width - 70;
-			_previewArea.height = _previewArea.height * _previewArea.scaleX;
-			_framesArea.redrawCurrentFrame();
+			_previewArea.width = BaseRoot.gameWidth - _toolsArea.width - 70;
+			_previewArea.scaleY = _previewArea.scaleX;
 			
 			_previewBorder.width = _previewArea.width + 12;
 			_previewBorder.height = _previewArea.height + 4;
@@ -129,7 +130,7 @@ package screens.editor
 		
 		internal function tryRestorePreview(frameId:int = 0):void 
 		{
-			_previewArea.removeChildren(5);
+			_previewArea.removeChildren(PreviewArea.OWN_CHILDREN_COUNT);
 			
 			if (!_levelData || !_levelData.blocks[frameId])
 				return;
@@ -151,19 +152,22 @@ package screens.editor
 				obstacle.x = obstacleData.x * PREVIEW_SCALE;
 				obstacle.y = obstacleData.y * PREVIEW_SCALE;
 			}
-			
-			_framesArea.redrawCurrentFrame();
 		}
 		
 		private function tryRestoreFrames():void 
 		{
-			if (!_levelData || _levelData.blocks.length <= 1)
-				return;
+			_framesArea.restorePlusButton();
 			
-			for (var i:int = 1; i < _levelData.blocks.length; i++)
+			if (!_levelData || _levelData.blocks.length < 1)
 			{
-				tryRestorePreview(i);
-				_framesArea.addFrame(i);
+				_framesArea.addFrame(0);
+			}
+			else
+			{
+				for (var i:int = 0; i < _levelData.blocks.length; i++)
+				{
+					_framesArea.addFrame(i);
+				}
 			}
 		}
 		
@@ -202,7 +206,7 @@ package screens.editor
 				setDraggedItemPosition(touchPoint);
 				setDraggedItemData();
 				
-				_framesArea.redrawCurrentFrame();
+				_framesArea.tryRedrawCurrentFrame();
 				
 				_draggedItem = null;
 			}
@@ -308,6 +312,7 @@ package screens.editor
 			_framesArea.clear();
 			_levelData = null;
 			
+			_framesArea.restorePlusButton();
 			_framesArea.addFrame(0);
 			tryRestorePreview();
 		}
@@ -321,25 +326,28 @@ package screens.editor
 		
 		private function onLoadLevelClick():void 
 		{
-			_framesArea.clear();
-			_framesArea.addFrame(0);
-			_levelData = null;
-			
 			BaseRoot.editorDataWorker.load(onLoadDone);
 			
 			function onLoadDone(data:Object):void
 			{
 				// TODO: check validity?
-				_levelData = data;
-				
-				tryRestorePreview(0);
-				tryRestoreFrames();
+				if (data)
+				{
+					_framesArea.clear();
+					_levelData = data;
+					
+					tryRestorePreview(0);
+					tryRestoreFrames();
+					_framesArea.activateHighlights();
+				}
 			}
 		}
 		
 		public function deactivate():void 
 		{
 			_layer.removeChild(this);
+			
+			_framesArea.clear();
 		}
 		
 		static public function get instance():EditorScreen 

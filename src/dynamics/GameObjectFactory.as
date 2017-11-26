@@ -61,8 +61,6 @@ package dynamics
 		
 		static private function initGfxFactory():StarlingFactory 
 		{
-			trace("[GameObjectFactory] Factory init start", getTimer());
-			
 			_gfxFactory = new StarlingFactory();
 			
 			// OBSTACLE_BIRD
@@ -84,8 +82,6 @@ package dynamics
 			_gfxFactory.parseDragonBonesData(Assets.instance.manager.getObject("Portal_ske"));
 			_gfxFactory.parseTextureAtlasData(Assets.instance.manager.getObject("Portal_tex_json"),
 						Assets.instance.manager.getTexture("Portal_tex"));
-			
-			trace("[GameObjectFactory] Factory init end", getTimer());
 			
 			return _gfxFactory;
 		}

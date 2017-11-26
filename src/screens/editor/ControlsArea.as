@@ -1,6 +1,7 @@
 package screens.editor 
 {
 	import assets.Assets;
+	import root.BaseRoot;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import ui.components.GameButton;
@@ -35,7 +36,7 @@ package screens.editor
 			addChild(_loadButton);
 			
 			_testLevelButton = new GameButton(onTestLevelClick, "Тест", new Image(Assets.instance.manager.getTexture("iconRight")))
-			_testLevelButton.x = Game.instance.width - _testLevelButton.width - 40;
+			_testLevelButton.x = BaseRoot.gameWidth - _testLevelButton.width - 40;
 			addChild(_testLevelButton);
 		}
 		

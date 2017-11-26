@@ -5,10 +5,11 @@ package screens.editor
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import ui.IMeasurable;
-	
 
 	public class PreviewArea extends Sprite implements IMeasurable
 	{
+		static public const OWN_CHILDREN_COUNT:int = 5;
+		
 		static private const BASE_WIDTH:int = 1000;
 		static private const BASE_HEIGHT:int = 650;
 		

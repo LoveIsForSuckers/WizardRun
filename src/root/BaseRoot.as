@@ -19,15 +19,15 @@ package root
 		
 		protected var _starling:Starling;
 		
-		private var _gameWidth:int;
-		private var _gameHeight:int;
-		private var _gameInternalScale:Number;
+		static private var _swfWidth:int;
+		static private var _swfHeight:int;
+		static private var _internalScale:Number;
 		
-		public function BaseRoot(gameWidth:int, gameHeight:int, gameInternalScale:Number) 
+		public function BaseRoot(swfWidth:int, swfHeight:int, internalScale:Number) 
 		{
-			_gameWidth = gameWidth;
-			_gameHeight = gameHeight;
-			_gameInternalScale = gameInternalScale;
+			_swfWidth = swfWidth;
+			_swfHeight = swfHeight;
+			_internalScale = internalScale;
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -37,8 +37,8 @@ package root
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			_starling = new Starling(Game, stage);
-			_starling.stage.stageWidth = _gameWidth * _gameInternalScale;
-			_starling.stage.stageHeight = _gameHeight * _gameInternalScale;
+			_starling.stage.stageWidth = _swfWidth * _internalScale;
+			_starling.stage.stageHeight = _swfHeight * _internalScale;
 			_starling.start();
 			
 			_starling.stage.addEventListener(ResizeEvent.RESIZE, onResize);
@@ -53,13 +53,13 @@ package root
 			{
 				var error:Sprite = new Sprite();
 				error.graphics.beginFill(0x550000);
-				error.graphics.drawRect(0, 0, _gameWidth * _gameInternalScale, _gameHeight * _gameInternalScale);
+				error.graphics.drawRect(0, 0, _swfWidth * _internalScale, _swfHeight * _internalScale);
 				error.graphics.endFill();
 				var errorText:TextField = new TextField();
 				errorText.x = 100;
 				errorText.y = 100;
-				errorText.width = (_gameWidth - 100) * _gameInternalScale;
-				errorText.height = (_gameHeight - 100) * _gameInternalScale;
+				errorText.width = (_swfWidth - 100) * _internalScale;
+				errorText.height = (_swfHeight - 100) * _internalScale;
 				errorText.wordWrap = true;
 				errorText.selectable = true;
 				errorText.text = "ОШИБКА 1: Не удалось создать 3D-контекст! \n\n Возможные причины: \n" +
@@ -87,20 +87,20 @@ package root
 			
 			var heightToWidth:Number = e.height / e.width;
 			
-			if (e.width < _gameWidth || heightToWidth > (3 / 4))
+			if (e.width < _swfWidth || heightToWidth > (3 / 4))
 			{
 				width = e.width;
 				height = e.width * 3 / 4;
 			}
-			else if (e.height < _gameHeight || heightToWidth <= (3 / 4))
+			else if (e.height < _swfHeight || heightToWidth <= (3 / 4))
 			{
 				height = e.height;
 				width = e.height * 4 / 3;
 			}
 			else
 			{
-				height = _gameHeight;
-				width = _gameWidth;
+				height = _swfHeight;
+				width = _swfWidth;
 			}
 			
 			if (width < 43)
@@ -118,6 +118,16 @@ package root
 			_starling.viewPort.height = height;
 			_starling.viewPort.x = x;
 			_starling.viewPort.y = y;
+		}
+		
+		static public function get gameWidth():int 
+		{
+			return _swfWidth * _internalScale;
+		}
+		
+		static public function get gameHeight():int 
+		{
+			return _swfHeight * _internalScale;
 		}
 		
 	}
