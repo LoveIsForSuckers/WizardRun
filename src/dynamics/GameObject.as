@@ -5,7 +5,7 @@ package dynamics
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
-	public class GameObject extends Sprite
+	public class GameObject extends Sprite implements IPoolable
 	{
 		protected var _startX:int;
 		protected var _startY:int;
@@ -28,6 +28,23 @@ package dynamics
 		public function update(deltaTime:Number):void
 		{
 			// for override
+		}
+		
+		/** 
+		 * For override! Does not work 'as is'!
+		 * */
+		public function toPool():void 
+		{
+			_speed = 0;
+			_startX = 0;
+			_startY = 0;
+			x = 0;
+			y = 0;
+		}
+		
+		public function clear():void 
+		{
+			
 		}
 		
 		public function get speed():int

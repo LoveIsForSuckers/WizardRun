@@ -30,27 +30,25 @@ package level
 			
 			for each (data in _obstaclesData)
 			{
-				var obstacle:BaseObstacle = GameObjectFactory.getNewByInternalName(data.type) as BaseObstacle;
-				if (!obstacle)
-				{
-					trace("[LevelSpawnBlock] Failed to aquire new", data.type);
-					continue;
-				}
-				obstacle.init(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y);
-				GameScreen.instance.addObstacle(obstacle);
+				spawnItem(gameSpeed, data);
 			}
 			
 			for each (data in _boostsData)
 			{
-				var boost:BaseBoost = GameObjectFactory.getNewByInternalName(data.type) as BaseBoost;
-				if (!boost)
-				{
-					trace("[LevelSpawnBlock] Failed to aquire new", data.type);
-					continue;
-				}
-				boost.init(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y);
-				GameScreen.instance.addBoost(boost);
+				spawnItem(gameSpeed, data);
 			}
+		}
+		
+		private function spawnItem(gameSpeed:int, data:Object):void
+		{
+			var object:GameObject = GameObjectFactory.getNewByInternalName(data.type);
+			if (!object)
+			{
+				trace("[LevelSpawnBlock] Failed to aquire new", data.type);
+				return;
+			}
+			object.init(gameSpeed, data.x + GameScreen.BLOCK_WIDTH, data.y);
+			GameScreen.instance.addGameObject(object);
 		}
 		
 		public function get type():String 

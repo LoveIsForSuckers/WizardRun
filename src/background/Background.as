@@ -8,16 +8,21 @@ package background
 	
 	public class Background extends Sprite
 	{
+		static private const PARALLAX_VALUES:Array = [0.05, 0.25, 0.5, 1];
+		static private const DISABLED_PARALLAX_VALUE:Number = 1.0;
+		
 		private var _bgTreesLayer:BgLayer;
 		private var _bgPathLayer:BgLayer;
 		private var _bgHillsLayer:BgLayer;
 		private var _bgCloudsLayer:BgLayer;
 		private var _speed:Number;
+		private var _useParallax:Boolean;
 		
-		public function Background()
+		public function Background(useParallax:Boolean = true)
 		{
 			super();
 			
+			_useParallax = useParallax;
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
@@ -26,22 +31,19 @@ package background
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			_bgCloudsLayer = new BgLayer(Assets.instance.manager.getTexture("clouds1"));
-			//_bgCloudsLayer.parallax = 0.05;
-			_bgCloudsLayer.parallax = 1;
+			_bgCloudsLayer.parallax = _useParallax ? PARALLAX_VALUES[0] : DISABLED_PARALLAX_VALUE;
 			addChild(_bgCloudsLayer);
 			
 			_bgHillsLayer = new BgLayer(Assets.instance.manager.getTexture("hills1"));
-			//_bgHillsLayer.parallax = 0.25;
-			_bgHillsLayer.parallax = 1;
+			_bgHillsLayer.parallax = _useParallax ? PARALLAX_VALUES[1] : DISABLED_PARALLAX_VALUE;
 			addChild(_bgHillsLayer);
 			
 			_bgTreesLayer = new BgLayer(Assets.instance.manager.getTexture("trees1"));
-			//_bgTreesLayer.parallax = 0.5;
-			_bgTreesLayer.parallax = 1;
+			_bgTreesLayer.parallax = _useParallax ? PARALLAX_VALUES[2] : DISABLED_PARALLAX_VALUE;
 			addChild(_bgTreesLayer);
 			
 			_bgPathLayer = new BgLayer(Assets.instance.manager.getTexture("path1"));
-			_bgPathLayer.parallax = 1;
+			_bgPathLayer.parallax = _useParallax ? PARALLAX_VALUES[3] : DISABLED_PARALLAX_VALUE;
 			addChild(_bgPathLayer);
 		}
 		

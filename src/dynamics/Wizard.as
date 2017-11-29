@@ -5,6 +5,7 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import dynamics.gravity.IGravityAffected;
 	import flash.ui.Keyboard;
 	import screens.game.GameScreen;
 	import starling.display.Quad;
@@ -14,7 +15,7 @@ package dynamics
 	import starling.filters.GlowFilter;
 	
 
-	public class Wizard extends Sprite
+	public class Wizard extends Sprite implements IGravityAffected
 	{
 		static public const ANIMATION_WALK:String = "walk";
 		static public const ANIMATION_IDLE:String = "idle";
@@ -31,7 +32,6 @@ package dynamics
 		private var _display:StarlingArmatureDisplay;
 		private var _canJumpKeyboard:Boolean;
 		private var _isDying:Boolean;
-		private var _isInJump:Boolean;
 		private var _isCasting:Boolean;
 		private var _isMovingLeft:Boolean;
 		private var _isMovingRight:Boolean;
@@ -82,11 +82,11 @@ package dynamics
 				}
 			}
 			
-			_collider = new Quad(width * 0.5, height * 0.7);
+			_collider = new Quad(width * 0.4, height * 0.6);
 			_collider.alpha = 0;
 			addChild(_collider);
 			_collider.x = - 0.5 * _collider.width;
-			_collider.y = -_collider.height;
+			_collider.y = -_collider.height - 20;
 		}
 		
 		private function onKeyUp(e:KeyboardEvent):void 
@@ -119,7 +119,7 @@ package dynamics
 			}
 			else if (e.keyCode == Keyboard.UP)
 			{
-				if(!_isInJump && _canJumpKeyboard)
+				if(_speedY == 0 && _canJumpKeyboard)
 					startJump();
 			}
 			else
@@ -139,7 +139,7 @@ package dynamics
 				
 			if (direction != 0)
 			{
-				if (!_isInJump && !_isCasting && !_isDying)
+				if (_speedY == 0 && !_isCasting && !_isDying)
 				{
 					if(direction > 0)
 						animate(ANIMATION_WALK);
@@ -162,26 +162,10 @@ package dynamics
 			}
 		}
 		
-		private function moveY(deltaTime:Number):void
-		{
-			if (y + _speedY * deltaTime <= GameScreen.FLOOR_Y)
-			{
-				y += _speedY * deltaTime;
-				_speedY -= (GameScreen.GRAVITY + (_isGhost ? GHOST_GRAVITY_REDUCE : 0)) * deltaTime;
-			}
-			else
-			{
-				y = GameScreen.FLOOR_Y;
-				_speedY = 0;
-				_isInJump = false;
-			}
-		}
-		
 		private function startJump():void
 		{
 			animate(ANIMATION_JUMP,1);
 			
-			_isInJump = true;
 			_canJumpKeyboard = false;
 			_speedY = - JUMP_IMPULSE;
 			if (_isGhost)
@@ -261,10 +245,10 @@ package dynamics
 			
 			_isMovingLeft = false;
 			_isMovingRight = false;
-			_isInJump = false;
 			_isCasting = false;
 			_canJumpKeyboard = true;
 			_castDelay = 0;
+			_speedY = 0;
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -289,13 +273,25 @@ package dynamics
 		{
 			_armature.advanceTime(deltaTime);
 			
-			if (_isInJump)
-				moveY(deltaTime);
-			
 			step(deltaTime);
 			
 			if(_castDelay > 0)
 				_castDelay -= deltaTime;
+		}
+		
+		public function get gravityMultiplier():Number 
+		{
+			return _isGhost ? 0.3 : 1.0;
+		}
+		
+		public function get speedY():int 
+		{
+			return _speedY;
+		}
+		
+		public function set speedY(value:int):void 
+		{
+			_speedY = value;
 		}
 		
 		public function get isDying():Boolean 

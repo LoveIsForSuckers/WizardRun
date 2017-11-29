@@ -3,13 +3,14 @@ package dynamics.obstacle
 	import assets.Assets;
 	import dynamics.GameObjectFactory;
 	import dynamics.IPoolable;
+	import dynamics.gravity.IGravityAffected;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.events.Event;
 	
 
-	public class Boulder extends BaseObstacle implements IPoolable
+	public class Boulder extends BaseObstacle implements IPoolable, IGravityAffected
 	{
 		static private const POOL:Vector.<Boulder> = new Vector.<Boulder>();
 		
@@ -37,9 +38,6 @@ package dynamics.obstacle
 		override public function update(deltaTime:Number):void
 		{
 			x -= _speed * deltaTime;
-			
-			if (y < GameScreen.FLOOR_Y)
-				moveY(deltaTime);
 		}
 		
 		override public function onImpact():void 
@@ -49,28 +47,15 @@ package dynamics.obstacle
 		
 		override public function toPool():void 
 		{
-			x = 0;
-			y = 0;
-			_speed = 0;
+			super.toPool();
 			_speedY = 0;
-			_startX = 0;
-			_startY = 0;
 			
 			POOL.push(this);
 		}
 		
-		private function moveY(deltaTime:Number):void
+		public function get gravityMultiplier():Number 
 		{
-			if (y + _speedY * deltaTime <= GameScreen.FLOOR_Y)
-			{
-				y += _speedY * deltaTime;
-				_speedY -= GameScreen.GRAVITY * deltaTime * 0.3;
-			}
-			else
-			{
-				y = GameScreen.FLOOR_Y;
-				_speedY = 0;
-			}
+			return 0.3;
 		}
 		
 		public function get speedY():int 

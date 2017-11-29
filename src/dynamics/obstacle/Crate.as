@@ -3,12 +3,13 @@ package dynamics.obstacle
 	import assets.Assets;
 	import dynamics.GameObjectFactory;
 	import dynamics.IPoolable;
+	import dynamics.gravity.IGravityAffected;
 	import dynamics.obstacle.BaseObstacle;
 	import screens.game.GameScreen;
 	import starling.display.Image;
 	import starling.events.Event;
 
-	public class Crate extends BaseObstacle implements IPoolable
+	public class Crate extends BaseObstacle implements IPoolable, IGravityAffected
 	{
 		static private const POOL:Vector.<Crate> = new Vector.<Crate>();
 		
@@ -37,23 +38,6 @@ package dynamics.obstacle
 		override public function update(deltaTime:Number):void
 		{
 			x -= _speed * deltaTime;
-			
-			if (y < GameScreen.FLOOR_Y)
-				moveY(deltaTime);
-		}
-		
-		private function moveY(deltaTime:Number):void
-		{
-			if (y + _speedY * deltaTime <= GameScreen.FLOOR_Y)
-			{
-				y += _speedY * deltaTime;
-				_speedY -= GameScreen.GRAVITY * deltaTime;
-			}
-			else
-			{
-				y = GameScreen.FLOOR_Y;
-				_speedY = 0;
-			}
 		}
 		
 		override public function onImpact():void 
@@ -65,14 +49,15 @@ package dynamics.obstacle
 		
 		override public function toPool():void 
 		{
-			x = 0;
-			y = 0;
-			_speed = 0;
+			super.toPool();
 			_speedY = 0;
-			_startX = 0;
-			_startY = 0;
 			
 			POOL.push(this);
+		}
+		
+		public function get gravityMultiplier():Number 
+		{
+			return 1.0;
 		}
 		
 		public function get speedY():int 

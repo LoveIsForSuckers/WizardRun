@@ -3,11 +3,16 @@ package screens.game
 	import assets.Assets;
 	import background.Background;
 	import com.greensock.TweenLite;
-	import dynamics.boost.BaseBoost;
-	import dynamics.obstacle.BaseObstacle;
-	import dynamics.obstacle.IObstacle;
+	import dynamics.GameObject;
 	import dynamics.Portal;
 	import dynamics.Wizard;
+	import dynamics.boost.BaseBoost;
+	import dynamics.boost.IBoost;
+	import dynamics.gravity.GravityManager;
+	import dynamics.gravity.IGravityAffected;
+	import dynamics.obstacle.BaseObstacle;
+	import dynamics.obstacle.IObstacle;
+	import flash.geom.Rectangle;
 	import level.SpawnLogic;
 	import magic.Lives;
 	import magic.Magic;
@@ -22,13 +27,11 @@ package screens.game
 	import starling.filters.BlurFilter;
 	import starling.text.TextField;
 	import ui.components.GameButton;
-	
 
 	public class GameScreen extends Sprite implements IScreen 
 	{
 		static public const UI_PADDING:int = 256;
 		
-		static public const GRAVITY:int = -9000;
 		static public const START_SPEED:int = 800;
 		static public const SPEED_INCREASE_FRAMES_INTERVAL:int = 240;
 		static public const SPEED_INCREASE_VALUE:int = 50;
@@ -66,9 +69,9 @@ package screens.game
 		private var _levelId:int;
 		
 		private var _spawnLogic:SpawnLogic;
-		private var _obstacles:Vector.<BaseObstacle> = new Vector.<BaseObstacle>;
-		private var _boosts:Vector.<BaseBoost> = new Vector.<BaseBoost>;
-		private var _portal:Portal;
+		private var _gameObjects:Vector.<GameObject> = new Vector.<GameObject>;
+		
+		private var _gravityManager:GravityManager;
 		
 		public function GameScreen() 
 		{
@@ -76,6 +79,8 @@ package screens.game
 			
 			if (!_instance)
 				_instance = this;
+			
+			_gravityManager = new GravityManager();
 		}
 		
 		public function activate(layer:Sprite):void 
@@ -94,9 +99,9 @@ package screens.game
 			if (!_uiProto)
 			{
 				_uiProto = new Image(Assets.instance.manager.getTexture("uiProto"));
-				_uiProto.height = stage.stageHeight - GameScreen.FLOOR_Y;
+				_uiProto.height = stage.stageHeight - FLOOR_Y;
 				_uiProto.width = stage.stageWidth;
-				_uiProto.y = GameScreen.FLOOR_Y + 1;
+				_uiProto.y = FLOOR_Y + 1;
 				_uiLayer.addChild(_uiProto);
 			}
 			
@@ -136,12 +141,17 @@ package screens.game
 			}
 		}
 		
-		private function onBackClick():void 
+		private function clearEventListeners():void
 		{
 			stage.removeEventListeners(KeyboardEvent.KEY_DOWN);
 			stage.removeEventListeners(KeyboardEvent.KEY_UP);
 			_wiz.removeEventListener("WizardDeath", onGameOver);
 			removeEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+		}
+		
+		private function onBackClick():void 
+		{
+			clearEventListeners();
 			deactivate();
 			
 			Game.instance.showMainMenu();
@@ -209,31 +219,10 @@ package screens.game
 			_spawnLogic.load(levelData);
 			
 			var i:int;
-			if (_obstacles.length > 0)
-			{
-				for (i = _obstacles.length - 1; i >= 0; i--)
-				{
-					_gameLayer.removeChild(_obstacles[i]);
-					_obstacles[i].toPool();
-					_obstacles.removeAt(i);
-				}
-			}
 			
-			if (_boosts.length > 0)
+			for (i = _gameObjects.length - 1; i >= 0; i--)
 			{
-				for (i = _boosts.length - 1; i >= 0; i--)
-				{
-					_gameLayer.removeChild(_boosts[i]);
-					_boosts[i].toPool();
-					_boosts.removeAt(i);
-				}
-			}
-			
-			if (_portal)
-			{
-				_gameLayer.removeChild(_portal);
-				_portal.toPool();
-				_portal = null;
+				removeGameObject(i);
 			}
 			
 			_gameSpeed = START_SPEED;
@@ -242,6 +231,7 @@ package screens.game
 			if (!_wiz)
 			{
 				_wiz = new dynamics.Wizard(_gameSpeed);
+				_gravityManager.push(_wiz);
 				_gameLayer.addChild(_wiz);
 			}
 			else
@@ -280,18 +270,20 @@ package screens.game
 			}
 			
 			_bg.update(e.passedTime);
+			_gravityManager.update(e.passedTime);
+			updateItems(e.passedTime);
+			
 			_wiz.update(e.passedTime);
-			
 			if (!_wiz.isDying)
-				testWizardHits();
-			
-			if (!_portal && !_wiz.isDying)
 			{
+				testWizardHits();
+				
 				_magic.update(e.passedTime, _gameSpeed);
-				updateScore(e.passedTime * _gameSpeed);
+				if (_magic.mana == Magic.MAX_MANA)
+					spawnPortal();
+				else
+					updateScore(e.passedTime * _gameSpeed);
 			}
-			
-			updateObstacles(e.passedTime);
 		}
 		
 		public function impactWizard(source:IObstacle):void 
@@ -314,129 +306,85 @@ package screens.game
 			}
 		}
 		
-		private function updateObstacles(deltaTime:Number):void 
+		private function updateItems(deltaTime:Number):void 
 		{			
 			_debug.x = BLOCK_WIDTH - _distance % BLOCK_WIDTH;
-			if (int(_distance / BLOCK_WIDTH) > _spawnLogic.currentBlock && !_portal)
+			if (int(_distance / BLOCK_WIDTH) > _spawnLogic.currentBlock/* && !_portal*/)
 				_spawnLogic.spawnBlock(_gameSpeed);
 			
 			var i:int;
-			for (i = _obstacles.length - 1; i >= 0; i--)
+			for (i = _gameObjects.length - 1; i >= 0; i--)
 			{
-				var obstacle:BaseObstacle = _obstacles[i];
-				
-				obstacle.update(deltaTime);
-				if (obstacle.x < -obstacle.width)
-				{
-					_gameLayer.removeChild(obstacle);
-					_obstacles.removeAt(i);
-					obstacle.toPool();
-				}
+				var object:GameObject = _gameObjects[i];
+				object.update(deltaTime);
+				if (object.x < - object.width)
+					removeGameObject(i, object);
 			}
+		}
+		
+		public function addGameObject(object:GameObject):void
+		{
+			if (object is IGravityAffected)
+				_gravityManager.push(object as IGravityAffected);
 			
-			for (i = _boosts.length - 1; i >= 0; i--)
-			{
-				var boost:BaseBoost = _boosts[i];
-				
-				boost.update(deltaTime);
-				if (boost.x < -boost.width)
-				{
-					_gameLayer.removeChild(boost);
-					_boosts.removeAt(i);
-					boost.toPool();
-				}
-			}
-			
-			if (_portal)
-			{
-				_portal.update(deltaTime);
-				
-				if (_portal.x < -_portal.x)
-				{
-					_gameLayer.removeChild(_portal);
-					_portal.toPool();
-					_portal = null;
-				}
-			}
-		}
-		
-		public function addBoost(boost:BaseBoost):void 
-		{
-			_boosts.push(boost);
-			_gameLayer.addChild(boost);
-		}
-		
-		public function addObstacle(obstacle:BaseObstacle):void 
-		{
-			_obstacles.push(obstacle);
-			_gameLayer.addChild(obstacle);
-		}
-		
-		public function trySpawnPortal():void
-		{
-			if (!_portal)
-			{
-				spawnPortal();
-				_magic.spend(Magic.MAX_MANA);
-			}
+			_gameObjects.push(object);
+			_gameLayer.addChild(object);
 		}
 		
 		private function spawnPortal():void 
 		{
 			Game.instance.playSound("teleport");
 			
-			_portal = new Portal();
-			_portal.init(_gameSpeed, BLOCK_WIDTH, 800);
-			_gameLayer.addChild(_portal);
+			var portal:Portal = new Portal();
+			portal.init(_gameSpeed, BLOCK_WIDTH, 800);
+			addGameObject(portal);
+		}
+		
+		private function removeGameObject(index:int, object:GameObject = null):void
+		{
+			if (!object)
+				object = _gameObjects[index];
+			
+			_gameObjects.removeAt(index);
+			_gameLayer.removeChild(object);
+			object.toPool();
 		}
 		
 		private function testWizardHits():void 
 		{
-			for (var i:int = _boosts.length - 1; i >= 0; i--)
-			{
-				var boost:BaseBoost = _boosts[i];
-				
-				if (boost && boost.bounds.intersects(_wiz.collider.getBounds(this)))
-				{
-					boost.onPickUp();
-					_gameLayer.removeChild(boost);
-					_boosts.removeAt(i);
-					boost.toPool();
-				}
-			}
+			var wizardBounds:Rectangle = _wiz.collider.getBounds(this);
 			
-			if (_portal && _portal.bounds.intersects(_wiz.collider.getBounds(this)))
+			for (var i:int = _gameObjects.length - 1; i >= 0; i--)
 			{
-				_gameLayer.removeChild(_portal);
-				_portal.toPool();
-				_portal = null;
+				var object:GameObject = _gameObjects[i];
 				
-				Game.instance.playSound("teleport");
-				
-				if (_levelId != MAX_LEVEL)
+				if (object.bounds.intersects(wizardBounds))
 				{
-					startNextLevel();
-				}
-				else
-				{
-					stage.removeEventListeners(KeyboardEvent.KEY_DOWN);
-					stage.removeEventListeners(KeyboardEvent.KEY_UP);
-					_wiz.removeEventListener("WizardDeath", onGameOver);
-					removeEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
-					
-					Game.instance.onGameComplete();
-				}
-			}
-			
-			if (_wiz.isGhost)
-				return;
-			
-			for each (var obstacle:BaseObstacle in _obstacles)
-			{
-				if (obstacle.bounds.intersects(_wiz.collider.getBounds(this)))
-				{
-					impactWizard(obstacle);
-					return;
+					if (object is IBoost)
+					{
+						(object as IBoost).onPickUp();
+						removeGameObject(i, object);
+					}
+					else if (object is Portal)
+					{
+						removeGameObject(i, object);
+						
+						Game.instance.playSound("teleport");
+						
+						if (_levelId != MAX_LEVEL)
+						{
+							startNextLevel();
+						}
+						else
+						{
+							clearEventListeners();
+							Game.instance.onGameComplete();
+						}
+					}
+					else if (!_wiz.isGhost && object is IObstacle)
+					{
+						impactWizard(object as IObstacle);
+					}
 				}
 			}
 		}
@@ -465,6 +413,7 @@ package screens.game
 			if (_gameSpeed < START_SPEED * 0.5)
 				_gameSpeed = START_SPEED * 0.5;
 			
+			// TODO: move instructions/tutorial elsewhere
 			if (_instructionsTF.visible)
 			{
 				if (_magic.mana >= 5000)
@@ -481,9 +430,9 @@ package screens.game
 			
 			_bg.speed = _gameSpeed;
 			
-			for each (var obstacle:BaseObstacle in _obstacles)
+			for each (var gameObject:GameObject in _gameObjects)
 			{
-				obstacle.speed = _gameSpeed;
+				gameObject.speed = _gameSpeed;
 			}
 		}
 		

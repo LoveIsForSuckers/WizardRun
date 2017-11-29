@@ -4,7 +4,7 @@ package dynamics.boost
 	import dynamics.IPoolable;
 	import dynamics.boost.IBoost;
 
-	public class BaseBoost extends GameObject implements IBoost, IPoolable
+	public class BaseBoost extends GameObject implements IBoost
 	{
 		
 		public function BaseBoost() 
@@ -15,13 +15,6 @@ package dynamics.boost
 		/* INTERFACE dynamics.IBoost */
 		
 		public function onPickUp():void 
-		{
-			// for override
-		}
-		
-		/* INTERFACE dynamics.IPoolable */
-		
-		public function toPool():void 
 		{
 			// for override
 		}

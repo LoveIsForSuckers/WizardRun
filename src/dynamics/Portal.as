@@ -5,6 +5,7 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import screens.game.GameScreen;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	
@@ -13,11 +14,12 @@ package dynamics
 	{
 		static private const POOL:Vector.<Portal> = new Vector.<Portal>();
 		
-		static private const SPEED_MODIFIER:Number = 0.2;
+		static private const FINAL_X:int = 1500;
 		static private const ANIMATION_IDLE:String = "animtion0";
 		
 		private var _armature:Armature;
 		private var _display:StarlingArmatureDisplay;
+		private var _lifeTime:Number = 0.0;
 		
 		static public function getNew():Portal 
 		{
@@ -39,29 +41,35 @@ package dynamics
 		override public function init(speed:int, startX:int, startY:int):void 
 		{
 			super.init(speed, startX, startY);
-			_speed *= SPEED_MODIFIER;
-			
 			_armature.animation.play(ANIMATION_IDLE);
+			scale = 0.75;
 		}
 		
 		override public function update(deltaTime:Number):void
-		{	
+		{
+			_lifeTime += deltaTime;
 			_armature.advanceTime(deltaTime);
-			x -= _speed * deltaTime;
-			y = 300 * Math.sin(x / 600) + _startY; 
+			
+			if (x > FINAL_X)
+			{
+				x -= _speed * deltaTime;
+				if (x < FINAL_X)
+					x = FINAL_X;
+				
+				scale = (GameScreen.BLOCK_WIDTH + FINAL_X - x) / GameScreen.BLOCK_WIDTH;
+			}
+			else
+			{
+				scale = 1 + 0.1 * Math.sin(_lifeTime);
+			}
 		}
 		
-		/* INTERFACE dynamics.IPoolable */
-		
-		public function toPool():void 
+		override public function toPool():void 
 		{
-			_armature.animation.gotoAndStopByProgress(ANIMATION_IDLE);
+			super.toPool();
 			
-			x = 0;
-			y = 0;
-			_speed = 0;
-			_startX = 0;
-			_startY = 0;
+			_armature.animation.gotoAndStopByProgress(ANIMATION_IDLE);
+			_lifeTime = 0.0;
 			
 			POOL.push(this);
 		}

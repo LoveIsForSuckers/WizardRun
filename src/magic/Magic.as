@@ -12,6 +12,7 @@ package magic
 	public class Magic extends Sprite
 	{
 		static public const MAX_MANA:int = 10000;
+		static public const MANA_GAIN:Number = 0.1;
 		
 		private var _mana:Number;
 		private var _barBg:Image;
@@ -136,12 +137,11 @@ package magic
 		
 		public function update(deltaTime:Number, _gameSpeed:int):void
 		{
-			_mana += deltaTime * _gameSpeed / 10;
+			_mana += deltaTime * _gameSpeed * MANA_GAIN;
 			
 			if (_mana > MAX_MANA)
 			{
 				_mana = MAX_MANA;
-				_gameScreen.trySpawnPortal();
 			}
 			
 			for each (var ability:Ability in _abilities)
