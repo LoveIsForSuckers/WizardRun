@@ -4,6 +4,7 @@ package dynamics
 	import dragonBones.starling.StarlingFactory;
 	import dynamics.boost.Life;
 	import dynamics.boost.Potion;
+	import dynamics.gravity.BasePlatform;
 	import dynamics.obstacle.Bird;
 	import dynamics.obstacle.Boulder;
 	import dynamics.obstacle.Crate;
@@ -17,9 +18,11 @@ package dynamics
 		static public const BOOST_POTION:String = "potion";
 		static public const BOOST_LIFE:String = "life";
 		static public const SYSTEM_PORTAL:String = "portal";
+		static public const BASE_PLATFORM:String = "basePlatform";
 		
 		static private var _boostTypes:Array = [Life, Potion];
 		static private var _obstacleTypes:Array = [Crate, Boulder, Bird];
+		static private var _platformTypes:Array = [BasePlatform];
 		
 		static private var _gfxFactory:StarlingFactory;
 		
@@ -31,6 +34,11 @@ package dynamics
 		static public function get obstacleTypes():Array 
 		{
 			return _obstacleTypes;
+		}
+		
+		static public function get platformTypes():Array
+		{
+			return _platformTypes;
 		}
 		
 		static public function getNewByInternalName(internalName:String):GameObject
@@ -49,6 +57,8 @@ package dynamics
 					return Potion.getNew();
 				case SYSTEM_PORTAL:
 					return Portal.getNew();
+				case BASE_PLATFORM:
+					return new BasePlatform(); // TODO: pool this fella
 				default:
 					return null;
 			}

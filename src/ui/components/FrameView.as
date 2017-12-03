@@ -65,6 +65,7 @@ package ui.components
 			_renderSource.x = 0;
 			_renderSource.y = 0;
 			
+			// TODO: bugs when original renderSource aspect ratio not equal to current
 			var matScale:Number = _border.width / sourceWidth;
 			var mat:Matrix = new Matrix();
 			mat.copyFrom(_renderSource.transformationMatrix);

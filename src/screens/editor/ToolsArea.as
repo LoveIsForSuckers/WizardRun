@@ -2,6 +2,7 @@ package screens.editor
 {
 	import dynamics.GameObjectFactory;
 	import dynamics.boost.BaseBoost;
+	import dynamics.gravity.BasePlatform;
 	import dynamics.obstacle.BaseObstacle;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -58,7 +59,7 @@ package screens.editor
 			for each (type in GameObjectFactory.boostTypes)
 			{
 				var boost:BaseBoost = new type();
-				child = boost.preview
+				child = boost.preview;
 				button = new GameButton(onPlacementClick, "", child, [boost]);
 				button.scale = 0.8;
 				boostContent.addChild(button);
@@ -79,7 +80,35 @@ package screens.editor
 			var boostArea:TabArea = new TabArea("Бусты", boostContent);
 			addChild(boostArea);
 			
-			boostArea.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			itemX = 0;
+			itemY = 0;
+			itemsInRow = 0;
+			var platformContent:Sprite = new Sprite();
+			for each (type in GameObjectFactory.platformTypes)
+			{
+				var platform:BasePlatform = new type();
+				child = platform.preview;
+				button = new GameButton(onPlacementClick, "", child, [platform]);
+				button.scale = 0.8;
+				platformContent.addChild(button);
+				button.x = itemX;
+				button.height += 15;
+				
+				itemsInRow ++;
+				if (itemsInRow < ITEMS_IN_ROW)
+				{
+					itemX += button.width + 20;
+				}
+				else
+				{
+					itemX = 0;
+					itemY += button.height + 20;
+				}
+			}
+			var platformArea:TabArea = new TabArea("Платформы", platformContent);
+			addChild(platformArea);
+			
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
 			function onAddedToStage(e:Event):void 
 			{
@@ -87,6 +116,7 @@ package screens.editor
 				
 				obstacleArea.y = 20;
 				boostArea.y = obstacleArea.height + obstacleArea.y + 20;
+				platformArea.y = boostArea.height + boostArea.y + 20;
 			}
 		}
 	}

@@ -5,6 +5,7 @@ package dynamics
 	import dragonBones.objects.DragonBonesData;
 	import dragonBones.starling.StarlingArmatureDisplay;
 	import dragonBones.starling.StarlingFactory;
+	import dynamics.gravity.GravityManager;
 	import dynamics.gravity.IGravityAffected;
 	import flash.ui.Keyboard;
 	import screens.game.GameScreen;
@@ -121,6 +122,11 @@ package dynamics
 			{
 				if(_speedY == 0 && _canJumpKeyboard)
 					startJump();
+			}
+			else if (e.keyCode == Keyboard.DOWN)
+			{
+				if (_speedY == 0 && y < GameScreen.FLOOR_Y)
+					y += GravityManager.AUTO_CLIMB_HEIGHT + 1; // to fall through platforms
 			}
 			else
 			{

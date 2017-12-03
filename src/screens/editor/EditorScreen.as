@@ -5,6 +5,8 @@ package screens.editor
 	import dynamics.GameObjectFactory;
 	import dynamics.boost.BaseBoost;
 	import dynamics.boost.IBoost;
+	import dynamics.gravity.BasePlatform;
+	import dynamics.gravity.IPlatform;
 	import dynamics.obstacle.BaseObstacle;
 	import dynamics.obstacle.IObstacle;
 	import flash.events.Event;
@@ -174,6 +176,15 @@ package screens.editor
 				obstacle.x = obstacleData.x * PREVIEW_SCALE;
 				obstacle.y = obstacleData.y * PREVIEW_SCALE;
 			}
+			
+			for each (var platformData:Object in _levelData.blocks[frameId].platforms)
+			{
+				var platform:BasePlatform = GameObjectFactory.getNewByInternalName(platformData.type) as BasePlatform;
+				platform.scale = 0.5;
+				_previewArea.addChild(platform);
+				platform.x = platformData.x * PREVIEW_SCALE;
+				platform.y = platformData.y * PREVIEW_SCALE;
+			}
 		}
 		
 		private function tryRestoreFrames():void 
@@ -202,6 +213,7 @@ package screens.editor
 				_draggedItem = null;
 			}
 			
+			// TODO: kinda hacky
 			var realClass:Class = Object(item).constructor;
 			_draggedItem = new realClass();
 			_draggedItem.scale = DRAGGED_ITEM_SCALE;
@@ -293,6 +305,7 @@ package screens.editor
 				_levelData.blocks[_framesArea.currentFrameId].type = "editorTest";
 				_levelData.blocks[_framesArea.currentFrameId].obstacles = [];
 				_levelData.blocks[_framesArea.currentFrameId].boosts = [];
+				_levelData.blocks[_framesArea.currentFrameId].platforms = [];
 			}
 		}
 		
@@ -312,6 +325,10 @@ package screens.editor
 			else if (_draggedItem is IObstacle)
 			{
 				_levelData.blocks[_framesArea.currentFrameId].obstacles.push(dataItem);
+			}
+			else if (_draggedItem is IPlatform)
+			{
+				_levelData.blocks[_framesArea.currentFrameId].platforms.push(dataItem);
 			}
 		}
 		

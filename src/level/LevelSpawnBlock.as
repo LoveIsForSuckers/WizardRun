@@ -16,12 +16,14 @@ package level
 		private var _type:String;
 		private var _obstaclesData:Array;
 		private var _boostsData:Array;
+		private var _platformsData:Array;
 		
 		public function LevelSpawnBlock(blockData:Object) 
 		{
 			_type = blockData.type;
 			_obstaclesData = blockData.obstacles;
 			_boostsData = blockData.boosts;
+			_platformsData = blockData.platforms;
 		}
 		
 		public function spawn(gameSpeed:int):void
@@ -34,6 +36,11 @@ package level
 			}
 			
 			for each (data in _boostsData)
+			{
+				spawnItem(gameSpeed, data);
+			}
+			
+			for each (data in _platformsData)
 			{
 				spawnItem(gameSpeed, data);
 			}

@@ -10,6 +10,7 @@ package screens.game
 	import dynamics.boost.IBoost;
 	import dynamics.gravity.GravityManager;
 	import dynamics.gravity.IGravityAffected;
+	import dynamics.gravity.IPlatform;
 	import dynamics.obstacle.BaseObstacle;
 	import dynamics.obstacle.IObstacle;
 	import flash.geom.Rectangle;
@@ -70,6 +71,7 @@ package screens.game
 		
 		private var _spawnLogic:SpawnLogic;
 		private var _gameObjects:Vector.<GameObject> = new Vector.<GameObject>;
+		private var _hasPortal:Boolean;
 		
 		private var _gravityManager:GravityManager;
 		
@@ -246,6 +248,8 @@ package screens.game
 			
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 			_wiz.addEventListener("WizardDeath", onGameOver);
+			
+			_hasPortal = false;
 		}
 		
 		private function onGameOver(e:Event):void 
@@ -279,7 +283,7 @@ package screens.game
 				testWizardHits();
 				
 				_magic.update(e.passedTime, _gameSpeed);
-				if (_magic.mana == Magic.MAX_MANA)
+				if (_magic.mana == Magic.MAX_MANA && !_hasPortal)
 					spawnPortal();
 				else
 					updateScore(e.passedTime * _gameSpeed);
@@ -326,6 +330,8 @@ package screens.game
 		{
 			if (object is IGravityAffected)
 				_gravityManager.push(object as IGravityAffected);
+			if (object is IPlatform)
+				_gravityManager.pushPlatform(object as IPlatform);
 			
 			_gameObjects.push(object);
 			_gameLayer.addChild(object);
@@ -334,6 +340,8 @@ package screens.game
 		private function spawnPortal():void 
 		{
 			Game.instance.playSound("teleport");
+			
+			_hasPortal = true;
 			
 			var portal:Portal = new Portal();
 			portal.init(_gameSpeed, BLOCK_WIDTH, 800);
@@ -368,6 +376,7 @@ package screens.game
 					else if (object is Portal)
 					{
 						removeGameObject(i, object);
+						_hasPortal = false;
 						
 						Game.instance.playSound("teleport");
 						

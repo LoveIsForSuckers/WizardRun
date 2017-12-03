@@ -77,11 +77,6 @@ package dynamics.obstacle
 			POOL.push(this);
 		}
 		
-		override public function get speed():int 
-		{
-			return super.speed;
-		}
-		
 		override public function set speed(value:int):void 
 		{
 			super.speed = SPEED_MODIFIER * value;

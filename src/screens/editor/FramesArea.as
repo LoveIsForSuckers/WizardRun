@@ -118,14 +118,17 @@ package screens.editor
 		
 		private function layoutHighlights():void 
 		{
-			_highlightBottom.width = _frames[0].width;
-			_highlightBottom.x = _frameButtons[_currentFrameId].x;
-			_highlightBottom.y = _frameButtons[0].y + _frameButtons[0].height - 2;
+			var curFrame:FrameView = _frames[_currentFrameId];
+			var curBtn:GameButton = _frameButtons[_currentFrameId];
 			
-			_highlightTop.width = _frames[0].width;
+			_highlightBottom.width = curFrame.width;
+			_highlightBottom.x = curBtn.x;
+			_highlightBottom.y = curBtn.y + curBtn.height - 2;
+			
+			_highlightTop.width = curFrame.width;
 			_highlightTop.scaleY = -1;
-			_highlightTop.x = _frameButtons[_currentFrameId].x;
-			_highlightTop.y = _frameButtons[0].y + 2;
+			_highlightTop.x = curBtn.x;
+			_highlightTop.y = curBtn.y + 2;
 		}
 		
 		private function onLeftBtnCLick():void 
