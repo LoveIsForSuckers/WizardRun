@@ -101,7 +101,7 @@ package screens.editor
 		
 		private function buildPreviewArea():void 
 		{
-			_lvlBgId = 2;
+			_lvlBgId = 1;
 			
 			_previewArea = new PreviewArea(_lvlBgId);
 			

@@ -41,6 +41,7 @@ package dynamics
 		private var _speedX:int;
 		private var _speedY:int = 0;
 		private var _collider:Quad;
+		private var _ignoresPlatforms:Boolean;
 		
 		public function Wizard(speedX:int)
 		{	
@@ -104,6 +105,10 @@ package dynamics
 			{
 				_canJumpKeyboard = true;
 			}
+			else if (e.keyCode == Keyboard.DOWN)
+			{
+				_ignoresPlatforms = false;
+			}
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void 
@@ -125,8 +130,9 @@ package dynamics
 			}
 			else if (e.keyCode == Keyboard.DOWN)
 			{
-				if (_speedY == 0 && y < GameScreen.FLOOR_Y)
-					y += GravityManager.AUTO_CLIMB_HEIGHT + 1; // to fall through platforms
+				_ignoresPlatforms = true;
+				if (_speedY == 0 && y != GameScreen.FLOOR_Y)
+					y += GravityManager.AUTO_CLIMB_HEIGHT + 1;
 			}
 			else
 			{
@@ -283,6 +289,13 @@ package dynamics
 			
 			if(_castDelay > 0)
 				_castDelay -= deltaTime;
+		}
+		
+		/* INTERFACE dynamics.gravity.IGravityAffected */
+		
+		public function get ignoresPlatforms():Boolean 
+		{
+			return _ignoresPlatforms;
 		}
 		
 		public function get gravityMultiplier():Number 

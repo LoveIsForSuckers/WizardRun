@@ -55,7 +55,7 @@ package dynamics.gravity
 		{
 			child.speedY -= GRAVITY * deltaTime * child.gravityMultiplier;
 			var afterMoveY:int = child.y + child.speedY * deltaTime * child.gravityMultiplier;
-			var nearestLowerY:int = getNearestLowerY(child.x, child.y);
+			var nearestLowerY:int = child.ignoresPlatforms ? _floorY : getNearestLowerY(child.x, child.y);
 			
 			if (afterMoveY < nearestLowerY)
 			{
@@ -69,7 +69,7 @@ package dynamics.gravity
 		}
 		
 		private function getNearestLowerY(x:int, y:int):int
-		{
+		{	
 			var results:Array = [];
 			for each (var platform:IPlatform in _platforms)
 			{

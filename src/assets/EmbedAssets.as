@@ -93,6 +93,8 @@ package assets
 		public static const crate:Class;
 		[Embed(source = "../../assets/boulder.png")]
 		public static const boulder:Class;
+		[Embed(source = "../../assets/platform.png")]
+		public static const platform:Class;
 		
 		[Embed(source = "../../assets/editor/crate.png")]
 		public static const cratePreview:Class;
@@ -104,6 +106,8 @@ package assets
 		public static const lifePreview:Class;
 		[Embed(source = "../../assets/editor/potion.png")]
 		public static const potionPreview:Class;
+		[Embed(source = "../../assets/editor/platform.png")]
+		public static const platformPreview:Class;
 		
 		[Embed(source = "../../assets/ability/slow.png")]
 		public static const slow:Class;

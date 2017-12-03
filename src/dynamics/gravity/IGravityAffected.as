@@ -18,6 +18,8 @@ package dynamics.gravity
 		function get speedY():int;
 		
 		function set speedY(value:int):void;
+		
+		function get ignoresPlatforms():Boolean;
 	}
 	
 }

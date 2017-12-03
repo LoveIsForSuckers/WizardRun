@@ -17,7 +17,7 @@ package screens.editor.data
 		public function save(levelData:Object):void 
 		{
 			var fr:FileReference = new FileReference();
-			fr.save(JSON.stringify(levelData), "testlevel.json");
+			fr.save(JSON.stringify(levelData), levelData.name + ".json");
 		}
 		
 		public function load(callback:Function):void 

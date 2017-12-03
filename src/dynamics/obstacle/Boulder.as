@@ -53,6 +53,11 @@ package dynamics.obstacle
 			POOL.push(this);
 		}
 		
+		public function get ignoresPlatforms():Boolean 
+		{
+			return false;
+		}
+		
 		public function get gravityMultiplier():Number 
 		{
 			return 0.3;
