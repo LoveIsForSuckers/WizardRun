@@ -119,6 +119,7 @@ package screens.game
 				_scoreTF = new TextField(500, UI_PADDING * 0.5, "Очки: 0");
 				_scoreTF.x = stage.stageWidth - _scoreTF.width;
 				_scoreTF.y = FLOOR_Y;
+				_scoreTF.format.font = "mini";
 				_scoreTF.format.size = 56;
 				_scoreTF.format.color = 0xFFFFFF;
 				_uiLayer.addChild(_scoreTF);
@@ -128,6 +129,7 @@ package screens.game
 			{
 				_distanceTF = new TextField(500, UI_PADDING * 0.5, "Дист: 0");
 				_distanceTF.x = stage.stageWidth - _distanceTF.width;
+				_distanceTF.format.font = "mini";
 				_distanceTF.format.size = 56;
 				_distanceTF.format.color = 0xFFFFFF;
 				_distanceTF.y = _scoreTF.y + _scoreTF.height + 10;
@@ -264,7 +266,7 @@ package screens.game
 		{
 			_time += e.passedTime;
 			_distance += e.passedTime * _gameSpeed;
-			_distanceTF.text = "Дист: " + _distance.toFixed();
+			_distanceTF.text =/* "Дист: " +*/ _distance.toFixed();
 			
 			_speedUpFramesLeft --;
 			if (_speedUpFramesLeft <= 0)
@@ -458,7 +460,7 @@ package screens.game
 		{
 			_score += number;
 			
-			_scoreTF.text = "Очки: " + _score.toString();
+			_scoreTF.text = /*"Очки: " +*/ _score.toString();
 		}
 		
 		

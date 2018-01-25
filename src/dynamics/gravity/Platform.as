@@ -9,6 +9,7 @@ package dynamics.gravity
 		static private const POOL:Vector.<Platform> = new Vector.<Platform>();
 		
 		private var _image:Image;
+		private var _width:int;
 		
 		static public function getNew():Platform 
 		{
@@ -24,12 +25,13 @@ package dynamics.gravity
 			
 			_image = new Image(Assets.instance.manager.getTexture("platform"));
 			_image.y = - 0.5 * _image.height;
+			_width = _image.width;
 			addChild(_image);
 		}
 		
 		override public function get rightX():int 
 		{
-			return x + _image.width;
+			return x + _width;
 		}
 		
 		override public function toPool():void 

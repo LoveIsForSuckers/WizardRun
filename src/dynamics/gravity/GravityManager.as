@@ -70,7 +70,7 @@ package dynamics.gravity
 		
 		private function getNearestLowerY(x:int, y:int):int
 		{	
-			var results:Array = [];
+			var results:Vector.<int> = new Vector.<int>();
 			for each (var platform:IPlatform in _platforms)
 			{
 				if (platform.leftX < x && platform.rightX > x && platform.y >= y - AUTO_CLIMB_HEIGHT)
@@ -88,8 +88,20 @@ package dynamics.gravity
 			}
 			else
 			{
-				results.sort();
-				return results[length - 1];
+				var diff:int;
+				var minDiff:int = _floorY;
+				var result:int;
+				for each (var platformY:int in results)
+				{
+					diff = y - AUTO_CLIMB_HEIGHT - platformY;
+					if (diff < minDiff)
+					{
+						minDiff = diff;
+						result = platformY;
+					}
+				}
+				
+				return result;
 			}
 		}
 	}
